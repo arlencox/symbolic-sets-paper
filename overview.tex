@@ -21,6 +21,20 @@ To achieve this, it needs to infer relations between the sets of attributes
 of distinct objects.
 Objects have an unbounded number of attributes, thus the analysis requires
 some abstraction over the attributes and their contents.
+\begin{figure}[t]
+  \newcommand{\picscale}{1}
+  \begin{center}
+    \subfigure[A concrete state]{ \label{f:1a:hoo:conc}
+      \tikzpics{\picscale}{hoo-conc}
+    }
+    \quad
+    \subfigure[Corresponding abstract state]{ \label{f:1b:hoo:abs}
+      \tikzpics{\picscale}{hoo-abs}
+    }
+  \end{center}
+  \caption{Open objects and their abstraction}
+  \label{f:1:hoo}
+\end{figure}
 Figure~\ref{f:1a:hoo:conc} represents a very simplified state, after
 the copy of the contents of objects \( \vary \) into object \( \varx \).
 This picture does not show field contents which are ignored here. % end !!!
@@ -40,30 +54,22 @@ Moreover, to infer invariants such as the abstract state shown in
 Figure~\ref{f:1b:hoo:abs}, the analysis needs to compute both the
 object partitions and the associated set relations, in the same time
 as those depend on each other.
-When dealing with updates, the analysis expands the partitions and the
+When dealing with updates, the analysis {\em expands} the partitions and the
 corresponding set relations.
 Conversely, the fixpoint computation causes the folding of partitions,
-which requires the computation of compact disjunctions of set properties.
-Last, the verification of a post-condition requires the verification
+which requires the computation of {\em compact disjunctions} of set
+properties.
+Last, the verification of a post-condition requires the {\em prooving}
 of set properties under a set of assumptions (for instance, that \( Y
 \subseteq X \), under the abstract state of Figure~\ref{f:1b:hoo:abs}).
-\begin{figure}[t]
-  \newcommand{\picscale}{1}
-  \begin{center}
-    \subfigure[A concrete state]{ \label{f:1a:hoo:conc}
-      \tikzpics{\picscale}{hoo-conc}
-    }
-    \quad
-    \subfigure[Corresponding abstract state]{ \label{f:1b:hoo:abs}
-      \tikzpics{\picscale}{hoo-abs}
-    }
-  \end{center}
-  \caption{Open objects and their abstraction}
-  \label{f:1:hoo}
-\end{figure}
-
 
 \paragraph{Shape analysis in presence of unstructured sharing.}
+We now discuss a second example of static analysis that needs to perform
+set reasoning.
+The shape analysis for data-structures with unbounded sharing presented
+in~\cite{memcad:15:sas} relies on separation logic~\cite{r:lics:02} to
+describe memory states, and on inductive definitions to summarize
+unbounded structures such as lists.
 % - paragraph on MemCAD
 %   . sharing properties, and inductive definitions parametered with sets
 %   . static analysis tasks: infer summaries, with appropriate set parameters
@@ -80,7 +86,6 @@ of set properties under a set of assumptions (for instance, that \( Y
   \caption{Shape abstraction and sharing}
   \label{f:2:memcad}
 \end{figure}
-\cite{memcad:15:sas}
 
 \paragraph{Need for set reasoning.}
 %   . a "master domain" controls the shape of properties
