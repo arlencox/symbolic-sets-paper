@@ -1,3 +1,123 @@
+%-----------------------------------------%
+% Colors                                  %
+%-----------------------------------------%
+\newrgbcolor{mblue}{        0.1   0.1   0.5 }
+\newrgbcolor{mbrown}{       0.57  0.4   0.3 }
+\newrgbcolor{mcyan}{        0.1   0.1   0.5 }
+\newrgbcolor{mgreen}{       0.2   0.5   0.2 }
+\newrgbcolor{mmidgray}{     0.65  0.65  0.65}
+\newrgbcolor{morange}{      0.8   0.45  0.45}
+\newrgbcolor{mpurple}{      0.5   0.1   0.5 }
+\newrgbcolor{mred}{         1     0     0   }
+\newrgbcolor{mhigray}{      0.21  0.21  0.21}
+\newrgbcolor{mgray}{        0.5   0.5   0.5 }
+\newrgbcolor{mmidgreen}{    0.3   0.8   0.4 }
+\newrgbcolor{mlightgray}{   0.85  0.85  0.85}
+\newrgbcolor{mlightblue}{   0.7   0.85  1.00}
+\newrgbcolor{mlightgreen}{  0.7   1.00  0.85}
+\newrgbcolor{mlightpurple}{ 1.00  0.7   1.00}
+\newrgbcolor{mlightred} {   1.00  0.7   0.7 }
+\newrgbcolor{mlightyellow}{ 1.00  1.00  0.6 }
+\newrgbcolor{mulightgray}{  0.98  0.98  0.98}
+\newrgbcolor{mulightblue}{  0.9   0.95  1.00}
+\newrgbcolor{mulightgreen}{ 0.9   1.00  0.95}
+\newrgbcolor{mulightpurple}{1.00  0.9   1.00}
+\newrgbcolor{mulightred} {  1.00  0.85  0.85}
+\newrgbcolor{mulightyellow}{1.00  1.00  0.87}
+\newrgbcolor{mvlightblue}{  0.8   0.9   1.00}
+\newrgbcolor{mvlightgreen}{ 0.8   1.00  0.9 }
+\newrgbcolor{mvlightpurple}{1.00  0.8   1.00}
+\newrgbcolor{mvlightred} {  1.00  0.85  0.85}
+\newrgbcolor{mvlightyellow}{1.00  1.00  0.73}
+\newrgbcolor{myellow}{      1.00  1.00  0.30}
+\newrgbcolor{mwhite}{       0.99  0.99  0.99}
+
+%-----------------------------------------%
+% Typing and abbreviations                %
+%-----------------------------------------%
+% Standard Abbrevs
+\newcommand{\eg}{e.g.\xspace}
+\newcommand{\ie}{i.e.\xspace}
+\newcommand{\resp}{resp.\xspace}
+% Removing
+\newcommand{\commentout}[1]{}
+% Project names
+\newcommand{\memcad}{{MemCAD}\xspace}
+
+%-----------------------------------------%
+% Math standard stuffs                    %
+%-----------------------------------------%
+% Abstraction
+\newcommand{\abs}[1]{{#1}^{\sharp}}
+% Booleans
+\newcommand{\true}{\mathbf{true}}
+\newcommand{\false}{\mathbf{false}}
+% Definitions
+\newcommand{\isdef}{::=}
+% Logical relations
+\newcommand{\logor}{\mathrel{\vee}}
+\newcommand{\logand}{\mathrel{\wedge}}
+\newcommand{\suplus}{\mathrel{\uplus}}
+% Powerset
+\newcommand{\partsof}[1]{\mcP(#1)}
+% Semantics
+\newcommand{\sem}[1]{\llbracket #1 \rrbracket}
+\newcommand{\asem}[1]{\abs{\llbracket #1 \rrbracket}}
+
+%-----------------------------------------%
+% Inserting Tikz pictures                 %
+%-----------------------------------------%
+% Including pictures
+\newcommand{\tikzpics}[2]{\scalebox{#1}{\input{tkz-#2.tex}}} % with scale
+\newcommand{\tikzpic}[1]{\tikzpics{1}{#1}}                   % without scale
+% Putting a formula
+\newcommand{\tkzputform}[2]{\node[] at (#1){\ensuremath{#2}};}
+\newcommand{\tkzputrghform}[2]{
+  \node[label distance=-10pt,inner sep=0pt,outer sep=0pt,
+    minimum height=0pt,minimum width=0pt,
+    outer xsep=0pt,outer ysep=0pt,inner xsep=0pt,inner ysep=0pt,
+    label=right:\ensuremath{#2}] at (#1){};}
+\newcommand{\tkzputlftform}[2]{
+  \node[label distance=-10pt,inner sep=0pt,outer sep=0pt,
+    minimum height=0pt,minimum width=0pt,
+    outer xsep=0pt,outer ysep=0pt,inner xsep=0pt,inner ysep=0pt,
+    label=left:\ensuremath{#2}] at (#1){};}
+% Putting a piece of text
+\newcommand{\tkzputtext}[2]{\node[] at (#1){#2};}
+\newcommand{\tkzputrghtext}[2]{
+  \node[label distance=-10pt,inner sep=0pt,outer sep=0pt,
+    minimum height=0pt,minimum width=0pt,
+    outer xsep=0pt,outer ysep=0pt,inner xsep=0pt,inner ysep=0pt,
+    label=right:#2] at (#1){};}
+\newcommand{\tkzputlfttext}[2]{
+  \node[label distance=-10pt,inner sep=0pt,outer sep=0pt,
+    minimum height=0pt,minimum width=0pt,
+    outer xsep=0pt,outer ysep=0pt,inner xsep=0pt,inner ysep=0pt,
+    label=left:#2] at (#1){};}
+
+%-----------------------------------------%
+% Programs                                %
+%-----------------------------------------%
+% Variables
+\newcommand{\ttvar}[1]{\mathtt{#1}}
+\newcommand{\cvar}[1]{\ensuremath{\texttt{#1}}}
+\newcommand{\varc}{\ttvar{c}}
+\newcommand{\vard}{\ttvar{d}}
+\newcommand{\varg}{\ttvar{g}}
+\newcommand{\varh}{\ttvar{h}}
+\newcommand{\vari}{\ttvar{i}}
+\newcommand{\varl}{\ttvar{l}}
+\newcommand{\varm}{\ttvar{m}}
+\newcommand{\varn}{\ttvar{n}}
+\newcommand{\varp}{\ttvar{p}}
+\newcommand{\varr}{\ttvar{r}}
+\newcommand{\vars}{\ttvar{s}}
+\newcommand{\vart}{\ttvar{t}}
+\newcommand{\varu}{\ttvar{u}}
+\newcommand{\varv}{\ttvar{v}}
+\newcommand{\varx}{\ttvar{x}}
+\newcommand{\vary}{\ttvar{y}}
+
 % single abstract state
 \renewcommand{\abstract}{\Sigma}
 % set of all abstract states

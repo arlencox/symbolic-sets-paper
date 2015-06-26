@@ -11,23 +11,57 @@ use, as well as operators to over-approximate the effect of program
 behaviors on these predicates, and their implementation.
 
 \paragraph{Inferrence of properties of open objects.}
-%   . main features of open objects
-%   . static analysis task: infer relation between object sets of fields
-%   . abstraction of structures
-%   . role of the set abstraction
-%   . nature of the invariants that are inferred
+Dynamic programming languages such as JavaScript feature {\em Open objects}
+that support dynamic addition and deletion of attributes and iteration over
+them.
+The analysis presented in~\cite{hoo:14:sas} computes relations among
+objects, so as to verify programs such as a copy of the attributes of an
+object into another object.
+To achieve this, it needs to infer relations between the sets of attributes
+of distinct objects.
+Objects have an unbounded number of attributes, thus the analysis requires
+some abstraction over the attributes and their contents.
+Figure~\ref{f:1a:hoo:conc} represents a very simplified state, after
+the copy of the contents of objects \( \vary \) into object \( \varx \).
+This picture does not show field contents which are ignored here. % end !!!
+Instead, we focus on the set of attributes each object comprises since
+taking contents into account would not change much the demonstration.
+To abstract precisely the relations between the attributes of both objects
+(\ie, in this case, all attributes of \( \vary \) are also attributes of
+\( \varx \)), we need to describe the fields of each object as the union
+of a series of sets of attributes, and to carry out relations over these
+sets.
+Figure~\ref{f:1b:hoo:abs} depicts such an abstract state, where \( X, Y \)
+stand for the set of all attributes of objects \( \varx, \vary \).
+The set of fields of \( \varx \) is partitioned into two subsets \( X_0,
+X_1 \), and \( X_0 \) is exactly equal to the set of all the attributes
+of \( \vary \).
+Moreover, to infer invariants such as the abstract state shown in
+Figure~\ref{f:1b:hoo:abs}, the analysis needs to compute both the
+object partitions and the associated set relations, in the same time
+as those depend on each other.
+When dealing with updates, the analysis expands the partitions and the
+corresponding set relations.
+Conversely, the fixpoint computation causes the folding of partitions,
+which requires the computation of compact disjunctions of set properties.
+Last, the verification of a post-condition requires the verification
+of set properties under a set of assumptions (for instance, that \( Y
+\subseteq X \), under the abstract state of Figure~\ref{f:1b:hoo:abs}).
 \begin{figure}[t]
-  \subfigure[A concrete state]{
-    % (a) a concrete state
-  }
-  \quad
-  \subfigure[Corresponding abstract state]{
-    % (b) its abstraction
-  }
+  \newcommand{\picscale}{1}
+  \begin{center}
+    \subfigure[A concrete state]{ \label{f:1a:hoo:conc}
+      \tikzpics{\picscale}{hoo-conc}
+    }
+    \quad
+    \subfigure[Corresponding abstract state]{ \label{f:1b:hoo:abs}
+      \tikzpics{\picscale}{hoo-abs}
+    }
+  \end{center}
   \caption{Open objects and their abstraction}
   \label{f:1:hoo}
 \end{figure}
-\cite{hoo:14:sas}
+
 
 \paragraph{Shape analysis in presence of unstructured sharing.}
 % - paragraph on MemCAD

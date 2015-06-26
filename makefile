@@ -7,6 +7,8 @@ all: symbolic-sets.pdf
 PIC=    
 SRC=	llncs.cls \
 	macros.tex \
+	tkz-hoo-conc.tex \
+	tkz-hoo-abs.tex \
 	intro.tex \
 	overview.tex \
 	logic.tex \

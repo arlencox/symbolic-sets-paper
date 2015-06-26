@@ -1,0 +1,19 @@
+\begin{tikzpicture}[]
+  % obj. 1
+  \tkzputlftform{0., 1.9}{\varx: X}
+  \draw[rounded corners=2pt] (0, 0) rectangle (1, 2.0);
+  \draw (0, 0.8) -- (1, 0.8);
+  \tkzputform{0.5, 1.4}{X_0}
+  \tkzputform{0.5, 0.4}{X_0}
+  % obj. 2
+  \tkzputlftform{2.3,1.9}{\vary: Y}
+  \draw[rounded corners=2pt] (2.3,0.8) rectangle (3.3, 2.0);
+  \tkzputform{2.8, 1.4}{Y_0}
+  % set relations
+  \draw[rounded corners=2pt,dotted](4.0, 0) rectangle (6.4, 2);
+  \tkzputform{5.2, 1}{
+    \begin{array}{cc}
+      & X_0 = Y_0 = Y \\
+      \logand & X = X_0 \suplus X_1 \\
+    \end{array}}
+\end{tikzpicture}
