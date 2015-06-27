@@ -1,0 +1,67 @@
+\begin{tikzpicture}[]
+  \newcommand{\xunit}{0.75}
+  % graph variable
+  %\tkzputlftform{ 0.0, 3.4 }{ \caddressof \varg }
+  %\fill [fill=mulightgray] (0.0, 3.2) rectangle (\xunit, 3.6);
+  %\draw [] (0.0, 3.2) rectangle (\xunit, 3.6);
+  % nodes
+  \foreach \xx/\num/\coldr/\colfill in {
+    2/0/mblue/mulightblue,
+    4/1/mpurple/mulightpurple,
+    6/2/mpurple/mulightpurple%
+  }{
+    \newcommand{\xmin}{\xx * \xunit}
+    \newcommand{\xmid}{\xx * \xunit + \xunit * 0.5}
+    \newcommand{\xmax}{\xx * \xunit + \xunit}
+    \fill [fill=\colfill] (\xmin, 2.4) rectangle (\xmax, 3.6);
+    \draw [color=\coldr] (\xmin, 2.4) rectangle (\xmax, 3.6);
+    \draw [color=\coldr] (\xmin, 2.8) -- (\xmax, 2.8);
+    \draw [color=\coldr] (\xmin, 3.2) -- (\xmax, 3.2);
+    \tkzputform{ \xmid, 3.0 }{ \num }
+  %  \tkzputlftform{ \xmin + 0.05, 3.6 }{ \naddr{\num} }
+  }
+  \tkzputform{ 6.5 * \xunit, 3.4 }{ \nullptr  }
+  \tkzputform{ 4.5 * \xunit, 2.6 }{ \nullptr  }
+  % edges
+  \foreach \xx/\y/\coldr/\colfill in {
+    2/0/mgreen/mulightgreen,
+    2/1/mgreen/mulightgreen,
+    6/0/mred/mulightred,
+    6/1/mred/mulightred%
+  }{
+    \newcommand{\xmin}{\xx * \xunit}
+    \newcommand{\xmax}{\xx * \xunit + \xunit}
+    \fill [fill=\colfill] (\xmin, \y * 1.2) rectangle (\xmax, \y * 1.2 + 0.8);
+    \draw [color=\coldr] (\xmin, \y * 1.2) rectangle (\xmax, \y * 1.2 + 0.8);
+    \draw [color=\coldr] (\xmin, \y * 1.2 + 0.4) -- (\xmax, \y * 1.2 + 0.4);
+  }
+  % pointers (list of nodes)
+  \foreach \xx in {2, 4}{
+    \newcommand{\xmin}{\xx * \xunit + 0.5 * \xunit}
+    \newcommand{\xmax}{\xx * \xunit + 2 * \xunit}
+    \tkptrdot{ \xmin, 3.4 }
+    \draw [-{Stealth}] (\xmin, 3.4) -- (\xmax, 3.4);
+  }
+  % pointers (lists of edges)
+  \foreach \xx/\y in {2.5/0, 2.5/1, 6.5/0, 6.5/1}{
+    \newcommand{\xmid}{\xx * \xunit}
+    \newcommand{\ysrc}{\y * 1.2 + 1.4}
+    \newcommand{\ydst}{\y * 1.2 + 0.8}
+    \tkptrdot{ \xmid, \ysrc }
+    \draw [-{Stealth}] (\xmid, \ysrc) -- (\xmid, \ydst);
+  }
+  % edges
+  \foreach \xxa/\ya/\xxb/\yb/\xxc/\yc/\xxd/\yd in {
+    2.5/1.8/3.0/1.8/3.5/2.5/4.0/2.5, % 0 => 1
+    2.5/0.6/5.9/0.6/4.9/2.5/6.0/2.5, % 0 => 2
+    6.5/1.8/4.5/1.8/4.5/1.8/4.5/2.4, % 2 => 1
+    6.5/0.6/4.5/0.6/4.5/2.5/3.0/2.5% % 2 => 0
+  }{
+    \newcommand{\xa}{\xxa * \xunit}
+    \newcommand{\xb}{\xxb * \xunit}
+    \newcommand{\xc}{\xxc * \xunit}
+    \newcommand{\xd}{\xxd * \xunit}
+    \tkptrdot{ \xa, \ya }
+    \draw[-{Stealth}](\xa,\ya) .. controls (\xb,\yb) and (\xc,\yc) .. (\xd,\yd);
+  }
+\end{tikzpicture}

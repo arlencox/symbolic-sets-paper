@@ -76,14 +76,17 @@ unbounded structures such as lists.
 %   . abstract domain structure
 %   . role of the set abstraction
 \begin{figure}[t]
-  \subfigure[A concrete state]{
-    % (a) a concrete state
-  }
-  \quad
-  \subfigure[Corresponding abstract state]{
-    % (b) its abstraction
-  }
-  \caption{Shape abstraction and sharing}
+  \newcommand{\picscale}{1}
+  \begin{center}
+    \subfigure[A concrete state]{
+      \tikzpics{\picscale}{memcad-conc}
+    }
+    \quad
+    \subfigure[Summarization principle]{
+      % (b) its abstraction
+    }
+  \end{center}
+  \caption{Summarization of an adjacency list-based graph representation}
   \label{f:2:memcad}
 \end{figure}
 

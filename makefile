@@ -3,17 +3,20 @@
 #------------------------------------------------------------------------
 all: symbolic-sets.pdf
 
-# Add pictures here
-PIC=    
-SRC=	llncs.cls \
+# Macros, templates sources, bibliography
+MACROS= llncs.cls \
 	macros.tex \
-	tkz-hoo-conc.tex \
+	symbolic-sets.bib
+# Pictures (order of appearance in the paper)
+TIKZ=	tkz-hoo-conc.tex \
 	tkz-hoo-abs.tex \
-	intro.tex \
+	tkz-memcad-conc.tex
+# Chapters (in order) and main file
+BODY=	intro.tex \
 	overview.tex \
 	logic.tex \
-	symbolic-sets.bib \
 	symbolic-sets.tex
+SRC= $(MACROS) $(TIKZ) $(BODY)
 symbolic-sets.pdf: $(SRC)
 	pdflatex symbolic-sets.tex && \
 	bibtex   symbolic-sets     && \

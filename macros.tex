@@ -94,6 +94,8 @@
     minimum height=0pt,minimum width=0pt,
     outer xsep=0pt,outer ysep=0pt,inner xsep=0pt,inner ysep=0pt,
     label=left:#2] at (#1){};}
+% Pointers
+\newcommand{\tkptrdot}[1]{\draw (#1) [fill=black] circle (0.05);}
 
 %-----------------------------------------%
 % Programs                                %
@@ -117,7 +119,10 @@
 \newcommand{\varv}{\ttvar{v}}
 \newcommand{\varx}{\ttvar{x}}
 \newcommand{\vary}{\ttvar{y}}
+% Pointers
+\newcommand{\nullptr}{\textbf{0x0}}
 
+%-----------------------------------------%
 % single abstract state
 \renewcommand{\abstract}{\Sigma}
 % set of all abstract states
