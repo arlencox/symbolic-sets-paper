@@ -12,16 +12,24 @@
     \tkzputform{ \xmid, 3.0 }{ \num }
     \tkzputlftform{ \xmin + 0.05, 3.6 }{ \naddr{\num} }
   }
-  \fill [fill=mulightpurple] (4 * \xunit, 1.6) rectangle (10 * \xunit, 3.6);
-  \draw [color=mpurple] (4 * \xunit, 1.6) rectangle (10 * \xunit, 3.6);
+  %\fill [fill=mulightpurple] (4 * \xunit, 1.0) rectangle (10 * \xunit, 3.6);
+  \fill [fill=mulightpurple] (4 * \xunit, 2.4) rectangle (10 * \xunit, 3.6);
+  \fill [fill=mulightpurple,pattern=checkerboard,pattern color=mulightred] (4 * \xunit, 2.4) rectangle (10 * \xunit, 3.6);
+  \fill [fill=mulightpurple] (4 * \xunit, 1.7) rectangle (10 * \xunit, 2.4);
+  \fill [fill=mulightred] (4 * \xunit, 1.0) rectangle (10 * \xunit, 1.8);
+  \draw [color=mpurple] (4 * \xunit, 1.0) rectangle (10 * \xunit, 3.6);
   \draw [fill=mulightgreen] (1.2 * \xunit, 0) rectangle (3.8 * \xunit, 2.0);
   \draw [color=mgreen] (1.2 * \xunit, 0) rectangle (3.8 * \xunit, 2.0);
-  \tkzputtext{ 7.2 * \xunit, 2.6 }{
+  \tkzputtext{ 7.2 * \xunit, 3.0 }{
     \begin{tabular}{c}
       summarized tail of \\
       the adjacency list \\
       (nodes and edges) \\
-      node addresses: \( \mcE \) \\
+    \end{tabular}}
+  \tkzputtext{ 7.2 * \xunit, 2.1 }{
+    node addresses: \( \mcE \)}
+  \tkzputtext{ 7.2 * \xunit, 1.4 }{
+    \begin{tabular}{c}
       outoing edges pointing \\
       into \( \{ \naddr{0} \} \suplus \mcE \) \\
     \end{tabular}}

@@ -70,27 +70,45 @@ The shape analysis for data-structures with unbounded sharing presented
 in~\cite{memcad:15:sas} relies on separation logic~\cite{r:lics:02} to
 describe memory states, and on inductive definitions to summarize
 unbounded structures such as lists.
-% - paragraph on MemCAD
-%   . sharing properties, and inductive definitions parametered with sets
-%   . static analysis tasks: infer summaries, with appropriate set parameters
-%   . abstract domain structure
-%   . role of the set abstraction
+Unstructured sharing is very challenging as it cannot be described using
+conventional inductive definitions.
+Figure~\ref{f:2a:memcad:conc} displays the representation of a three nodes
+graph using an adjacency list data-structure.
+To summarize such a structure using inductive predicates in separation
+logic, \cite{memcad:15:sas} proposes to augment the list inductive
+predicates with set information, which express where edges may point to.
+This representation is shown in Figure~\ref{f:2b:memcad:sum} in a form
+where the first node is kept materialized.
+It both asserts that edges of that node as well as edges from other nodes
+point to the address of a valid node, namely an element of \( \{ \naddr{0}
+\} \suplus \mcE \).
 \begin{figure}[t]
   \newcommand{\picscale}{1}
   \begin{center}
-    \subfigure[A concrete state]{
+    \subfigure[A concrete state]{ \label{f:2a:memcad:conc}
       \tikzpics{\picscale}{memcad-conc}
     }
     \quad
-    \subfigure[Summarization principle]{
+    \subfigure[Summarization principle]{ \label{f:2b:memcad:sum}
       \tikzpics{\picscale}{memcad-abs}
     }
   \end{center}
   \caption{Summarization of an adjacency list-based graph representation}
   \label{f:2:memcad}
 \end{figure}
+Therefore, the analysis needs to track the set information adjoined to
+the structural inductive definitions.
+When a node or edge is materialized, the set of graph relations should
+be extended so as to reflect the knowledge about its successor(s).
+Conversely, the folding of inductive predicates necessitates the
+verification that some set relations hold in the abstract level.
 
 \paragraph{Need for set reasoning.}
-%   . a "master domain" controls the shape of properties
-%   . set abstraction not specific, simply represents the facts sent by
-%     the "master domain".
+Both analyses consist of a composite abstract domain, that comprises a
+{\em structural abstract domain} describing the shape of structures, and
+of a {\em set abstract domain} expressing relations among set and value
+(pointers, field names, contents...) entities.
+The operations that need to be performed in the set abstract domain are
+also similar, and mainly include the meet with additional constraints,
+the generalization of constraints, and the entailment checking.
+
