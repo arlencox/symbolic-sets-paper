@@ -1,0 +1,51 @@
+\begin{tikzpicture}[]
+  \newcommand{\xunit}{0.75}
+  % nodes
+  \foreach \xx/\num in {2/0}{
+    \newcommand{\xmin}{\xx * \xunit}
+    \newcommand{\xmid}{\xx * \xunit + \xunit * 0.5}
+    \newcommand{\xmax}{\xx * \xunit + \xunit}
+    \fill [fill=mulightblue] (\xmin, 2.4) rectangle (\xmax, 3.6);
+    \draw [color=mblue] (\xmin, 2.4) rectangle (\xmax, 3.6);
+    \draw [color=mblue] (\xmin, 2.8) -- (\xmax, 2.8);
+    \draw [color=mblue] (\xmin, 3.2) -- (\xmax, 3.2);
+    \tkzputform{ \xmid, 3.0 }{ \num }
+    \tkzputlftform{ \xmin + 0.05, 3.6 }{ \naddr{\num} }
+  }
+  \fill [fill=mulightpurple] (4 * \xunit, 1.6) rectangle (10 * \xunit, 3.6);
+  \draw [color=mpurple] (4 * \xunit, 1.6) rectangle (10 * \xunit, 3.6);
+  \draw [fill=mulightgreen] (1.2 * \xunit, 0) rectangle (3.8 * \xunit, 2.0);
+  \draw [color=mgreen] (1.2 * \xunit, 0) rectangle (3.8 * \xunit, 2.0);
+  \tkzputtext{ 7.2 * \xunit, 2.6 }{
+    \begin{tabular}{c}
+      summarized tail of \\
+      the adjacency list \\
+      (nodes and edges) \\
+      node addresses: \( \mcE \) \\
+      outoing edges pointing \\
+      into \( \{ \naddr{0} \} \suplus \mcE \) \\
+    \end{tabular}}
+  \tkzputtext{ 2.5 * \xunit, 1.0 }{
+    \begin{tabular}{c}
+      summarized \\
+      list of edges \\
+      of node \( \naddr{0} \) \\
+      pointing into \\
+      \( \{ \naddr{0} \} \suplus \mcE \) \\
+    \end{tabular}}
+  % pointers (list of nodes)
+  \foreach \xx in {2}{
+    \newcommand{\xmin}{\xx * \xunit + 0.5 * \xunit}
+    \newcommand{\xmax}{\xx * \xunit + 2 * \xunit}
+    \tkptrdot{ \xmin, 3.4 }
+    \draw [-{Stealth}] (\xmin, 3.4) -- (\xmax, 3.4);
+  }
+  % pointers (lists of edges)
+  \foreach \xx/\y in {2.5/1}{
+    \newcommand{\xmid}{\xx * \xunit}
+    \newcommand{\ysrc}{\y * 1.2 + 1.4}
+    \newcommand{\ydst}{\y * 1.2 + 0.8}
+    \tkptrdot{ \xmid, \ysrc }
+    \draw [-{Stealth}] (\xmid, \ysrc) -- (\xmid, \ydst);
+  }
+\end{tikzpicture}

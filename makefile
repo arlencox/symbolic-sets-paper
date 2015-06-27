@@ -10,7 +10,8 @@ MACROS= llncs.cls \
 # Pictures (order of appearance in the paper)
 TIKZ=	tkz-hoo-conc.tex \
 	tkz-hoo-abs.tex \
-	tkz-memcad-conc.tex
+	tkz-memcad-conc.tex \
+	tkz-memcad-abs.tex
 # Chapters (in order) and main file
 BODY=	intro.tex \
 	overview.tex \
