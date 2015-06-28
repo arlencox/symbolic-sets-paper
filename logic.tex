@@ -74,7 +74,7 @@ predicate).
 We define the following language in order to express such constraints:
 \begin{definition}[Symbolic Sets]
   \label{d:1:symsets}
-  {\em Symbolic sets} are defined by the following grammar:
+  {\em Symbolic sets} are defined by the grammar:
   \begin{align*}
     L (\in \symsets) ::=
     & \ L \wedge L \
@@ -150,7 +150,7 @@ abstract operators:
 \begin{compactitem}
 \item \( \adomassume: \adom \times \symsets \rightarrow \adom \), which
   conservatively represents a constraint into an abstract state, \ie,
-  ensures that, for all \( \astate, L \), \( \gammadom( \astate ) \sinter
+  ensures that, for all \( \astate, L \), \( \gammadom( \astate ) \cap
   \gamma( L ) \subseteq \gammadom( \adomassume( \astate, L ) ) \);
 \item \( \adomprove: \adom \times \symsets \rightarrow \{ \true, \false \} \),
   which conservatively attempts to verify that a symbolic set constraint
@@ -161,7 +161,17 @@ abstract operators:
 % add some example
 
 \paragraph{Lattice operations.}
-% join, widening, le
+Finally, the analysis of loops is commonly based on the computation of
+abstract post-fixpoints~\cite{cc:popl:77}, thus \( \adom \) should provide
+sound over-approximation of concrete states join.
+In the logical point of view, this amounts to computing a common weakening
+for two abstract constraints.
+This is performed by an operator \( \adomjoin: \adom \times \adom
+\rightarrow \adom \) such that, for all \( \astate_0, \astate_1 \),
+\( \gammadom( \astate_0 ) \cup \gammadom( \astate_1 ) \subseteq
+\gammadom( \adomjoin( \astate_0, \astate_1 ) ) \).
+Widening operator \( \adomwiden \) should satisfy the same property
+and ensure termination of any sequence of abstract iterates.
 
 \paragraph{Old version.}
 
