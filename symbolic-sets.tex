@@ -1,21 +1,33 @@
 \documentclass{llncs}
-\usepackage{amsmath,amssymb}
-\RequirePackage{amsfonts}
-\RequirePackage{amsmath}
-\RequirePackage{amssymb}
-\RequirePackage{amstext}
-\RequirePackage{color}
-\RequirePackage{graphicx}
-\RequirePackage{microtype}
-\RequirePackage{paralist}
-\RequirePackage{pst-node}
-\RequirePackage{subfigure}
-\RequirePackage{xspace}
 \usepackage{tikz}
 \usetikzlibrary{matrix,chains,scopes}
 \usetikzlibrary{arrows.meta}
 \usetikzlibrary{patterns}
-\input{fonts.tex}
+\usepackage{amsmath,amssymb,amsfonts,amstext}
+\usepackage{color}
+\usepackage{graphicx}
+\usepackage{microtype}
+\usepackage{paralist}
+\usepackage{pst-node}
+\usepackage{xspace}
+\usepackage{listings}
+\usepackage{subfigure}
+\renewcommand{\ttdefault}{pcr}
+
+\lstdefinestyle{colored}{
+    belowskip=0pt,
+    xleftmargin=\parindent,
+    showstringspaces=true,
+    basicstyle=\footnotesize\ttfamily,
+    keywordstyle=\bfseries\color{green!40!black},
+    commentstyle=\itshape\color{purple!40!black},
+%    identifierstyle=\color{blue},
+    stringstyle=\color{orange}
+}
+
+\lstset{basicstyle=\ttfamily,style=colored}
+
+\input{fonts}
 
 \title{Abstractions for Symbolic Sets}
 
@@ -37,7 +49,7 @@
 %- Forward vs backward analysis
 %- Modern set abstractions offer performance and precision
 %- Set abstractions are useful for a wide variety of problems
-\input{intro.tex}
+\input{intro}
 
 %2. Overview (2 pages)
 %-> a couple of examples, showing very intuitively (possibly just with pictures)
@@ -45,7 +57,7 @@
 %Possibly:
 %- a quick picture of HOO
 %- a quick picture of Huisong's work
-\input{overview.tex}
+\input{overview}
 
 %3. Set Abstraction Problem (1 page)
 %-> set up problem framework / why abstract domain vs other things?
@@ -64,13 +76,14 @@
 %4.4 EQ functor
 %4.5 Packing functor
 %- Why packing doesn't work for BDDs in model checking, but does work here.
-%
+\input{constructed}
+
 %5. Solver-based set abstractions (1.5 pages)
 %-> encode problem to traditional, known problem
 %5.1 SMT
 %5.2 QBF
-%
-%
+\input{solvers}
+
 %6. Evaluation (2 pages)
 %-> compare approaches in several classes of problems
 %- Benchmark suites:
@@ -81,7 +94,8 @@
 %- Old set domains much slower
 %- New set domains faster and often more precise
 %- SMT doesn't scale in on these applications
-%
+\input{evaluation}
+
 %7. Tradeoffs/Limitations (0.5 pages)
 %-> limitations and possible enhancements
 %- Cardinality
