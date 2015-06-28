@@ -128,6 +128,25 @@
 \newcommand{\naddr}[1]{\texttt{n}_{#1}} % Node addresses
 
 %-----------------------------------------%
+% Set abstraction                         %
+%-----------------------------------------%
+% set of all set variables
+\newcommand{\setvars}{\bbX_{\bf s}}
+% set variables (in case we change font)
+\newcommand{\setvw}{W}
+\newcommand{\setvx}{X}
+\newcommand{\setvy}{Y}
+\newcommand{\setvz}{Z}
+% set of all elements
+\newcommand{\values}{\bbV}
+% set of concrete states
+\newcommand{\states}{\bbS}
+% abstract domain (generic)
+\newcommand{\adom}{\abs{\bbD}}     % abstract domain
+\newcommand{\astate}{\abs{\state}} % generic abstrct element
+\newcommand{\gammadom}{\gamma}     % concretization function
+
+%-----------------------------------------%
 % single abstract state
 \renewcommand{\abstract}{\Sigma}
 % set of all abstract states
@@ -138,13 +157,13 @@
 \newcommand{\comp}[1]{{#1}^{\mathrm{c}}}
 % individual set variables: W, X, Y, or Z
 % set of all set variables
-\newcommand{\setvars}{\textsc{SetVars}}
+%\newcommand{\setvars}{\textsc{SetVars}}
 % concrete state
 \newcommand{\state}{\sigma}
 % set of all concrete states
-\newcommand{\states}{\textsc{States}}
+%\newcommand{\states}{\textsc{States}}
 % set of all values
-\newcommand{\values}{\textsc{Vals}}
+%\newcommand{\values}{\textsc{Vals}}
 % concrete set c
 % syntax of a logical constraint L
 % syntax of a set expression E
