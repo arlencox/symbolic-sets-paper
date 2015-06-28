@@ -172,3 +172,10 @@ This is performed by an operator \( \adomjoin: \adom \times \adom
 \gammadom( \adomjoin( \astate_0, \astate_1 ) ) \).
 Widening operator \( \adomwiden \) should satisfy the same property
 and ensure termination of any sequence of abstract iterates.
+
+Last, operator \( \adomisle: \adom \times \adom \rightarrow \{ \true,
+\false \} \) conservatively decides implication among abstract set
+constraints (by ensuring that \( \adomisle( \astate_0, \astate_1 ) =
+\true \Longrightarrow \gammadom( \astate_0 ) \subseteq \gammadom(
+\astate_1 ) \)), and allows to verify the convergence of abstract
+iterates.
