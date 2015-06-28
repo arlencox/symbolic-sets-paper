@@ -68,7 +68,7 @@ believe that it serves as a good starting point for extensions to the
 logic, such as reasoning about explicit set contents or more precise
 cardinality.
 
-However, despite the fact that we are not reasoning about the values contained in sets or complex cardinalities, Boolean algebras, by themselves, are challenging for invariant generation.  Naive approaches such as saturation and pattern matching rarely work without complex heuristics~\cite{fixbag:cav:11,ab:ecoop:13}.  It is unavoidable that the worst-case time for precise precise invariant generation will be exponential because of the Boolean algebra. However it is desirable that, despite the Boolean algebra, invariant generation should be efficient in the common case, and unlike systems that involve complex heuristics, lose precision only in understandable and predictable ways.
+However, despite the fact that we are not reasoning about the values contained in sets or complex cardinalities, Boolean algebras, by themselves, are challenging for invariant generation.  Naive approaches such as saturation and pattern matching rarely work without complex heuristics~\cite{fixbag:cav:11,ab:ecoop:13}.  It is unavoidable that the worst-case time for precise precise invariant generation will be exponential because of the Boolean algebra. However, it is desirable that invariant generation should be efficient in the common case, and unlike systems that involve complex heuristics, lose precision only in understandable and predictable ways.
 
 % AC: seems like this could be tightened up and combined with the next paragraph
 In this paper we aim to address the performance and precision challenges
@@ -85,27 +85,14 @@ used by two research analyzers.
 
 In this paper we make the following contributions.
 \begin{compactitem}
-\item We define a common language for symbolic set constraints.
+\item We define a common interface for nearly Boolean algebraic set abstractions.
   %% xr: not very specific; I suggest to add "adapted for static analysis"
   %%     or "that describes static analyzers set reasoning needs"
-  This constraint language is used as the framework for all set
+  This interface is used as the framework for all set
   abstractions (Section~\ref{sec:logic-and-set-abstraction}).
-\item We construct scalable abstractions for set relationships
-  targeted at real-world problems in data structure verification.
-  %% xr: our construction allows a lot of flexibility; we should
-  %%     probably highlight this (constructed abstractions can be
-  %%     adapted both in cost and precision to the needs)
-  These abstractions use specialized data structures to represent set
-  constraints uniformly and efficiently (Section~\ref{sec:constructed}).
-\item We adapt existing solvers for Boolean algebras to the set abstraction
-  framework.
-  %% xr: equivalently => with what ?
-  We show that this is equivalently expressive (Section~\ref{sec:solvers}).
+\item Using specialized data structures to represent set constraints uniformly and efficiently, we construct scalable abstractions and combinators for set relationships.  These abstractions are easily swappable, customizable, and extensible depending on the application domain.  We designed these abstractions to target real-world problems in data structure verification (Section~\ref{sec:constructed}).
+\item We show that off-the-shelf solvers can be adapted to the set abstraction interface.  We demonstrate this with an abstraction based on satisfiability modulo theories (Section~\ref{sec:solvers}).
 \item We compare and contrast the constructed abstractions, solver
   abstractions, with and without various abstraction combinators on a
-  variety of real-world benchmarks.
-  %% xr: "can offer" make it seem incidental.
-  We find that constructed abstractions can offer significantly better
-  performance than existing solvers without any loss of precision
-  (Section~\ref{sec:evaluation}).
+  variety of real-world benchmarks.  We find that due to the renaming and projection abstract domain operations that constructed abstractions perform better than highly-tuned off-the-shelf solvers while offering comparable precision (Section~\ref{sec:evaluation}).
 \end{compactitem}
