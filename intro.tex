@@ -3,53 +3,130 @@
 
 % Don't forget to add references!!!
 
-It is well understood that the verification of program properties that involve data structures is a challenging problem.  There are a multitude of reasons for this, but one key reason is that if a data structure is unbounded, there is a potentially unbounded number of relationships between elements.  Therefore, a critical aspect of a data structure abstraction is how these relationships are abstracted.  One technique that is growing in popularity is the use of set or bag constraints to abstract relationships between collections of elements in the data structures, regardless of whether or not data structure involved is a set.
+It is well understood that the verification of program properties that
+involve data structures is a challenging problem.
+There are a multitude of reasons for this, but one key reason is that
+if a data structure is unbounded, there is a potentially unbounded number
+of relationships between elements.
+Therefore, a critical aspect of a data structure abstraction is how these
+relationships are abstracted.
+%% xr: though, always used in conjunction with others
+%%  (in the two examples of section 2, arguably, of separation logic)
+One technique that is growing in popularity is the use of set or bag
+constraints to abstract relationships between collections of elements
+in the data structures, regardless of whether or not data structure
+involved is a set.
 
-For example, consider the program in Figure~\ref{fig:intro-example} that copies one map on top of another.  Within the loop, there is a complex relationship between the sets of keys of \ttvar{src} and \ttvar{dst}.  At the specified point, the key sof \ttvar{src} can be partitioned into three parts.  The keys $X_v$ already visited by the loop, the element currently being visited by the loop $\{\varx\}$, and the keys $X_n$ not visited by the loop.  The keys of \ttvar{dst} can be partitioned into those originally in \ttvar{dst} that have not been overwritten, and those $X_v$ that have been overwritten or added from \ttvar{src}.  This set reasoning allows precise symbolic tracking of the provenance of map partitions.
+%% xr: need to adjust overview, there is some repetition now
+For example, consider the program in Figure~\ref{fig:intro-example}
+that copies one map on top of another.
+Within the loop, there is a complex relationship between the sets of
+keys of \ttvar{src} and \ttvar{dst}.
+At the specified point, the keys of \ttvar{src} can be partitioned into
+three parts.
+The keys $X_v$ already visited by the loop, the element currently being
+visited by the loop $\{\varx\}$, and the keys $X_n$ not visited by
+the loop.
+The keys of \ttvar{dst} can be partitioned into those originally in
+\ttvar{dst} that have not been overwritten, and those $X_v$ that have
+been overwritten or added from \ttvar{src}.
+This set reasoning allows precise symbolic tracking of the provenance
+of map partitions.
 
 \begin{figure}[tb]
-    \newbox\exprogbox
-    \begin{lrbox}{\exprogbox}
-        \begin{minipage}[t][1cm][b]{0.4\textwidth}
-        \begin{lstlisting}[language=python]
+  \newbox\exprogbox
+  \begin{lrbox}{\exprogbox}
+    \begin{minipage}[t][1cm][b]{0.4\textwidth}
+      \begin{lstlisting}[language=python]
 def extend(dst, src):
   for x in src:
     # invariant point
     dst[x] = src[x]
-        \end{lstlisting}
-        \end{minipage}
-    \end{lrbox}
-    \newbox\exproginv
-    \begin{lrbox}{\exproginv}
-        \begin{minipage}[t][0.9cm][b]{0.4\textwidth}
-        \begin{align*}
-        \exists X_v, X_n. \; keys(\ttvar{src}) &= X_v \suplus \{\varx\} \suplus X_n \\
-        {} \logand keys(\ttvar{dst}) &= (keys(\ttvar{dst})_0 \setminus X_v) \suplus X_v
-        \end{align*}
-        \end{minipage}
-    \end{lrbox}
-    \centering
-    \subfigure[Function to copy all keys and values from map \ttvar{src} onto map \ttvar{dst}]{\usebox\exprogbox}
-    \quad
-    \subfigure[Set abstraction at \texttt{\textit{invariant point}}]{\usebox\exproginv}
-    \caption{Set constraints can relate portions of data structures}
-    \label{fig:intro-example}
+      \end{lstlisting}
+    \end{minipage}
+  \end{lrbox}
+  \newbox\exproginv
+  \begin{lrbox}{\exproginv}
+    \begin{minipage}[t][0.9cm][b]{0.4\textwidth}
+      \begin{align*}
+        \exists X_v, X_n. \; keys(\ttvar{src})
+        & = X_v \suplus \{\varx\} \suplus X_n
+        \\
+        {} \logand keys(\ttvar{dst})
+        & = (keys(\ttvar{dst})_0 \setminus X_v) \suplus X_v
+      \end{align*}
+    \end{minipage}
+  \end{lrbox}
+  \centering
+  \subfigure[Function to copy all keys and values from map \ttvar{src}
+  onto map \ttvar{dst}]{\usebox\exprogbox}
+  \quad
+  \subfigure[Set abstraction at \texttt{\textit{invariant point}}]{%
+    \usebox\exproginv}
+  \caption{Set constraints can relate portions of data structures}
+  \label{fig:intro-example}
 \end{figure}
 
+This paper focuses on the subset of set logic that is \emph{nearly
+  Boolean algebraic}---a Boolean algebra over set variables with
+singleton sets.
+We find that this subset is sufficiently large to be useful and we
+believe that it serves as a good starting point for extensions to the
+logic, such as reasoning about explicit set contents or more precise
+cardinality.
 
-
-This paper focuses on the subset of set logic that is \emph{nearly Boolean algebraic}---a Boolean algebra over set variables with singleton sets.  We find that this subset is sufficiently large to be useful and we believe that it serves as a good starting point for extensions to the logic, such as reasoning about explicit set contents or more precise cardinality.
-
-However, even with the nearly Boolean algebraic restriction, naive implementations of invariant generation can easily be intractably slow and uselessly imprecise.  The primary source of performance problems is the Boolean algebra.  By combining unions, intersections, complements, conjunctions, disjunctions, and quantification, the representation of the Boolean algebra \emph{often} grows exponentially large or takes exponential time to query.  Simple attempts to limit this exponential behavior lead to unpredictable imprecision.
+However, even with the nearly Boolean algebraic restriction, naive
+implementations of invariant generation can easily be intractably
+slow and uselessly imprecise.
+%% xr: this part seems unconvincing to me
+%%     maybe the issue is that "combining...etc" seems a bit abstract here
+%%     [we have a good idea of how we do it, but I do not think the reader
+%%      will]
+The primary source of performance problems is the Boolean algebra.
+By combining unions, intersections, complements, conjunctions,
+disjunctions, and quantification, the representation of the Boolean
+algebra \emph{often} grows exponentially large or takes exponential
+time to query.
+%% xr: what is meant by "simple attempts"
+Simple attempts to limit this exponential behavior lead to unpredictable
+imprecision.
 
 % AC: seems like this could be tightened up and combined with the next paragraph
-In this paper we aim to address the performance and precision challenges by defining a variety of interchangeable abstractions and abstraction combinators that can be selected for a particular application.  This includes abstractions based on binary decision diagrams, satisfiability modulo theories, and linear set constraints.  Additionally, it includes performance enhancing combinators for tracking singleton sets, handling equality, and doing dynamic variable packing.  These abstractions and combinators exist within a general framework so that additional abstractions and combinators can be easily added.  This framework is available within the QUICr library, which is now being used by two research analyzers.
+In this paper we aim to address the performance and precision challenges
+by defining a variety of interchangeable abstractions and abstraction
+combinators that can be selected for a particular application.
+This includes abstractions based on binary decision diagrams,
+satisfiability modulo theories, and linear set constraints.
+Additionally, it includes performance enhancing combinators for tracking
+singleton sets, handling equality, and doing dynamic variable packing.
+These abstractions and combinators exist within a general framework so
+that additional abstractions and combinators can be easily added.
+This framework is available within the QUICr library, which is now being
+used by two research analyzers.
 
 In this paper we make the following contributions.
-\begin{itemize}
-    \item We define a common language for symbolic set constraints.  This constraint language is used as the framework for all set abstractions (Section~\ref{sec:logic-and-set-abstraction}).
-    \item We construct scalable abstractions for set relationships targeted at real-world problems in data structure verification.  These abstractions use specialized data structures to represent set constraints uniformly and efficiently (Section~\ref{sec:constructed}).
-    \item We adapt existing solvers for Boolean algebras to the set abstraction framework.  We show that this is equivalently expressive (Section~\ref{sec:solvers}).
-    \item We compare and contrast the constructed abstractions, solver abstractions, with and without various abstraction combinators on a variety of real-world benchmarks.  We find that
-    constructed abstractions can offer significantly better performance than existing solvers without any loss of precision (Section~\ref{sec:evaluation}).
-\end{itemize}
+\begin{compactitem}
+\item We define a common language for symbolic set constraints.
+  %% xr: not very specific; I suggest to add "adapted for static analysis"
+  %%     or "that describes static analyzers set reasoning needs"
+  This constraint language is used as the framework for all set
+  abstractions (Section~\ref{sec:logic-and-set-abstraction}).
+\item We construct scalable abstractions for set relationships
+  targeted at real-world problems in data structure verification.
+  %% xr: our construction allows a lot of flexibility; we should
+  %%     probably highlight this (constructed abstractions can be
+  %%     adapted both in cost and precision to the needs)
+  These abstractions use specialized data structures to represent set
+  constraints uniformly and efficiently (Section~\ref{sec:constructed}).
+\item We adapt existing solvers for Boolean algebras to the set abstraction
+  framework.
+  %% xr: equivalently => with what ?
+  We show that this is equivalently expressive (Section~\ref{sec:solvers}).
+\item We compare and contrast the constructed abstractions, solver
+  abstractions, with and without various abstraction combinators on a
+  variety of real-world benchmarks.
+  %% xr: "can offer" make it seem incidental.
+  We find that constructed abstractions can offer significantly better
+  performance than existing solvers without any loss of precision
+  (Section~\ref{sec:evaluation}).
+\end{compactitem}
