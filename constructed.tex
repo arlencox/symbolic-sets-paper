@@ -1,2 +1,45 @@
 \section{Constructed Set Abstractions}
 \label{sec:constructed}
+An abstract domain is defined by a class of set constraints and their machine
+representation, and abstract operations following the signature given in
+Section~\ref{s:3:2:sign}.
+In this section, we introduce three basic set abstract domains (respectively
+based on linear constraints, QUIC graphs, and BDDs) and two set abstract
+domain functors, that map a set domain into another, more expressive or
+efficient one.
+
+\subsection{Linear Set Constraints}
+\label{s:4:1:lin}
+% - set of predicates
+% - concretization function
+% - main algorithm principle: lazy, quasi normalization
+% - example (from the MemCAD test cases
+
+\subsection{QUIC graphs}
+\label{s:4:2:quic}
+% - set of predicates
+% - concretization function
+% - algorithms main ideas
+% - example
+
+\subsection{BDD-based Set Constraints}
+\label{s:4:3:bdd}
+% - BDD structure quickly explained
+% - encoding of a class of set constraints (it gives the gamma)
+% - algorithms main ideas
+% - example
+
+\subsection{The Equalities Domain Functor: Compact Equality Constraints}
+\label{s:4:4:eqs}
+% - origin of the equalities problem (cases where there are too many variables
+%   and most of them are equal, consequences in terms of complexity)
+% - principle of the functor
+% - abstract states and concretization
+% - example
+
+\subsection{The Packing Domain Functor: Sparse Constraints}
+\label{s:4:5:packs}
+% - issue with relational abstract domains
+% - packing principle (citations to Astree)
+% - abstract states and concretization
+% - example

@@ -17,6 +17,9 @@ BODY=	abstract.tex \
 	intro.tex \
 	overview.tex \
 	logic.tex \
+	constructed.tex \
+	solvers.tex \
+	evaluation.tex \
 	symbolic-sets.tex
 SRC= $(MACROS) $(TIKZ) $(BODY)
 symbolic-sets.pdf: $(SRC)
