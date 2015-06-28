@@ -1,51 +1,7 @@
-\section{Logic and Set Abstraction}
-\label{sec:logic-and-set-abstraction}
-In this section, we define the signature of a set abstract domain, by the
-concretization function and the abstract operations it should provide.
 
-\subsection{Set Abstraction}
-\label{s:3:1:abs}
-In this paper, we use symbols $\setvw$, $\setvx$, $\setvy$, and $\setvz$
-to represent set variables in $\setvars$.
-We are interested in purely symbolic set relations, and do not make any
-assumption on the type of the elements of the sets those variables stand
-for.
-We let \( \values \) denote the set of all these elements.
-A concrete state is a function \( \state: \setvars \rightarrow
-\partsof{\values} \).
-We write \( \states \) for the set of such elements.
+In this section we present the logical underpinnings of our class of set abstractions.  We are interested in a subclass of sets where sets are purely symbolic.  A \emph{purely symbolic set abstraction} is an abstraction for sets that places no requirements on the type or capabilities of the values stored within the set.  It does this by not allowing the expression of values within the logic.
 
-As usual in program analysis, {\em set abstract domain} is defined by a
-set of {\em abstract elements} \( \adom \) which describe the family of
-logical properties it can express and a concretization function
-\( \gammadom \) that maps each element of \( \adom \) into the set of
-concrete states that satisfy it.
-\begin{example}[]
-  % present a very basic set domain (I suggest: empty/non empty)
-\end{example}
-
-\subsection{Operations over Set Abstractions}
-\label{s:3:2:sign}
-We now formalize the list of the main operations need to use a set abstract
-domain for either of the static analyses shown in Section~\ref{s:2:over}.
-
-\paragraph{Remarkable lattice elements.}
-% top, bot, is_bot
-
-\paragraph{Forgetting a set variable.}
-% forget
-
-\paragraph{Representation of set constraints.}
-% constrain
-% sat
-
-\paragraph{Lattice operations.}
-% join, widening, le
-
-\paragraph{Old version.}
-
-  A \emph{purely symbolic set abstraction} is an abstraction for sets that places no requirements on the type or capabilities of the values stored within the set.
-
+In this paper, we use symbols $W$, $X$, $Y$, and $Z$ to represent set variables in $\setvars$.  We use $\state$ to represent a concrete state in $\states$ and we use $\abstract$ to represent an abstract state in $\abstracts$.
 \begin{definition}[Symbolic Sets]
     Symbolic sets are defined by the following grammar:
     
