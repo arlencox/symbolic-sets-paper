@@ -68,21 +68,7 @@ believe that it serves as a good starting point for extensions to the
 logic, such as reasoning about explicit set contents or more precise
 cardinality.
 
-However, even with the nearly Boolean algebraic restriction, naive
-implementations of invariant generation can easily be intractably
-slow and uselessly imprecise.
-%% xr: this part seems unconvincing to me
-%%     maybe the issue is that "combining...etc" seems a bit abstract here
-%%     [we have a good idea of how we do it, but I do not think the reader
-%%      will]
-The primary source of performance problems is the Boolean algebra.
-By combining unions, intersections, complements, conjunctions,
-disjunctions, and quantification, the representation of the Boolean
-algebra \emph{often} grows exponentially large or takes exponential
-time to query.
-%% xr: what is meant by "simple attempts"
-Simple attempts to limit this exponential behavior lead to unpredictable
-imprecision.
+However, despite the fact that we are not reasoning about the values contained in sets or complex cardinalities, Boolean algebras, by themselves, are challenging for invariant generation.  Naive approaches such as saturation and pattern matching rarely work without complex heuristics~\cite{fixbag:cav:11,ab:ecoop:13}.  It is unavoidable that the worst-case time for precise precise invariant generation will be exponential because of the Boolean algebra. However it is desirable that, despite the Boolean algebra, invariant generation should be efficient in the common case, and unlike systems that involve complex heuristics, lose precision only in understandable and predictable ways.
 
 % AC: seems like this could be tightened up and combined with the next paragraph
 In this paper we aim to address the performance and precision challenges
