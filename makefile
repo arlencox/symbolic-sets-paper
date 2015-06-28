@@ -13,7 +13,8 @@ TIKZ=	tkz-hoo-conc.tex \
 	tkz-memcad-conc.tex \
 	tkz-memcad-abs.tex
 # Chapters (in order) and main file
-BODY=	intro.tex \
+BODY=	abstract.tex \
+	intro.tex \
 	overview.tex \
 	logic.tex \
 	symbolic-sets.tex

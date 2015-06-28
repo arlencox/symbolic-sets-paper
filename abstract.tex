@@ -1,0 +1,17 @@
+\begin{abstract}
+  Software static analysis tools often need to perform set reasoning in
+  order to track sets of program values, pointers and memory addresses.
+  Relations among sets and elements need to be tracked during the analysis
+  to enable the verification of some classes of program semantic properties.
+  We formalize an {\em abstract domain view} of set reasoning, in the sense
+  of abstract interpretation, which integrates naturally into interpretation
+  based static analyzers.
+  We construct basic set abstract domains relying on efficient specialized
+  data-structures and propose techniques to lift set abstract domains into
+  more expressive or more efficient ones.
+  We also show that readily available solvers can be turned into set
+  abstract domains.
+  We report on the design and implementation of QUICr, a library of set
+  abstract domains and assess the efficiency and precision of domains
+  built from specialized structures and solvers.
+\end{abstract}
