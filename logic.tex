@@ -18,24 +18,49 @@ We write \( \states \) for the set of such elements.
 As usual in program analysis, {\em set abstract domain} is defined by a
 set of {\em abstract elements} \( \adom \) which describe the family of
 logical properties it can express and a concretization function
-\( \gammadom \) that maps each element of \( \adom \) into the set of
-concrete states that satisfy it.
-\begin{example}[]
-  % present a very basic set domain (I suggest: empty/non empty)
+\( \gammadom: \adom \rightarrow \partsof{\states} \) that maps each
+element of \( \adom \) into the set of concrete states that satisfy it.
+\begin{example}[(Non-)Emptiness set domain]
+  \label{ex:1:mt}
+  A very basic example of such domain is the {\em (non-)emptiness} domain
+  that comprises the following elements:
+  \begin{compactitem}
+  \item \( \bot \) which denotes the unsatisfiable abstract constraint
+    (\ie, \( \gammadom( \bot ) = \emptyset ) \));
+  \item the functions from \( \setvars \) into \( \{ [=\emptyset],
+    [\not=\emptyset], \top \} \), and where a function \( \astate \) of
+    that form is concretized into the set of states \( \state \) such that
+    \( \astate( \setvx ) = [=\emptyset] \) (\resp, \( \astate( \setvx ) =
+    [=\emptyset] \)) implies that \( \state( \setvx ) = \emptyset \)
+    (\resp, \( \state( \setvx ) \not= \emptyset \))
+  \end{compactitem}
 \end{example}
 
 \subsection{Operations over Set Abstractions}
 \label{s:3:2:sign}
-We now formalize the list of the main operations need to use a set abstract
-domain for either of the static analyses shown in Section~\ref{s:2:over}.
+We now formalize the list of the main operations needed so that we can use
+a set abstract \( \adom \) domain for either of the static analyses shown
+in Section~\ref{s:2:over}.
 
 \paragraph{Remarkable lattice elements.}
-% top, bot, is_bot
+Static analyses typically start with an unconstrained state.
+This is materialized by a \( \adomtop \in \adom \) element with full
+concretization, \ie, \( \gammadom( \adomtop ) = \states \).
+Similarly abstract element \( \adombot \in \adom \) should describe
+the unsatisfiable abstract constraint (\ie, \( \gammadom( \adombot ) =
+\emptyset \)).
+In Example~\ref{ex:1:mt}, \( \adombot \) is \( \bot \) and \( \adomtop \)
+is \( \lambda (x \in \setvars) \cdot \top \).
+Moreover, a static analysis often has to determine if an abstract state
+describes unsatisfiable constraints.
+Thus, \( \adom \) should provide an operator \( \adomisbot: \adom
+\rightarrow \{ \true, \false \} \) such that \( \adomisbot( \astate )
+= \true \Longrightarrow \gammadom( \astate ) = \emptyset \).
 
 \paragraph{Forgetting a set variable.}
 % forget
 
-\paragraph{Representation of set constraints.}
+\paragraph{Assuming and verifying set constraints.}
 % constrain
 % sat
 
