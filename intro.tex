@@ -4,18 +4,11 @@
 % Don't forget to add references!!!
 
 It is well understood that the verification of program properties that
-involve data structures is a challenging problem.
+involve data structures is a challenging problem~\cite{jahob:thesis:07,compass:popl:11,fixbag:cav:11,celia:vmcai:12,ab:ecoop:13,hoo:14:sas,memcad:15:sas}.
 There are a multitude of reasons for this, but one key reason is that
-if a data structure is unbounded, there is a potentially unbounded number
-of relationships between elements.
-Therefore, a critical aspect of a data structure abstraction is how these
-relationships are abstracted.
-%% xr: though, always used in conjunction with others
-%%  (in the two examples of section 2, arguably, of separation logic)
-One technique that is growing in popularity is the use of set or bag
-constraints to abstract relationships between collections of elements
-in the data structures, regardless of whether or not data structure
-involved is a set.
+if a data structure is unbounded, there is a potentially unbounded number of constraints on its elements.  Since these constraints often affect important properties such as memory safety~\cite{memcad:15:sas}, functional correctness~\cite{fixbag:cav:11}, or basic program behavior~\cite{hoo:14:sas}, it is vital to develop techniques for efficiently reasoning about relationships between unbounded numbers of elements.
+
+Here we use set constraints to reason about unbounded collections of elements.  Set constraints can be used to dynamically partition data structures, correlate collections of elements with one another, or determine analysis case splits.  They are useful for representing data and pointers relationships in structures such as maps, graphs, lists, sets, and arrays.  They can be combined with other techniques such as separation logic~\cite{hoo:14:sas,memcad:15:sas} and numerical analyses~\cite{quicr:cav:14} to enhance those analyses.
 
 %% xr: need to adjust overview, there is some repetition now
 For example, consider the program in Figure~\ref{fig:intro-example}
