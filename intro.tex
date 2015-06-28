@@ -60,10 +60,7 @@ def extend(dst, src):
   \label{fig:intro-example}
 \end{figure}
 
-This paper focuses on the subset of set logic that is \emph{nearly
-  Boolean algebraic}---a Boolean algebra over set variables with
-singleton sets.
-We find that this subset is sufficiently large to be useful and we
+This paper focuses on abstractions for states described by the logic for \emph{symbolic sets}.  The logic consists of a Boolean algebra over the set variables with singleton sets. We find that this subset is sufficiently large to be useful and we
 believe that it serves as a good starting point for extensions to the
 logic, such as reasoning about explicit set contents or more precise
 cardinality.
@@ -80,12 +77,12 @@ Additionally, it includes performance enhancing combinators for tracking
 singleton sets, handling equality, and doing dynamic variable packing.
 These abstractions and combinators exist within a general framework so
 that additional abstractions and combinators can be easily added.
-This framework is available within the QUICr library, which is now being
+This framework is available within the QUICr library, which is now
 used by two research analyzers.
 
 In this paper we make the following contributions.
 \begin{compactitem}
-\item We define a common interface for nearly Boolean algebraic set abstractions.
+\item We define a common interface for symbolic set abstractions that is designed to meet the needs of static analyzers.
   %% xr: not very specific; I suggest to add "adapted for static analysis"
   %%     or "that describes static analyzers set reasoning needs"
   This interface is used as the framework for all set
