@@ -58,54 +58,127 @@ Thus, \( \adom \) should provide an operator \( \adomisbot: \adom
 = \true \Longrightarrow \gammadom( \astate ) = \emptyset \).
 
 \paragraph{Forgetting a set variable.}
-% forget
+When an update takes place, static analysis tools have to drop parts or
+all of the facts they know about the entities modified by the assignment.
+In the case of set abstract domain \( \adom \), this should be performed
+by an operator \( \adomforget: \adom \times \setvars \rightarrow \adom \).
+% forget soundness property
 
 \paragraph{Assuming and verifying set constraints.}
-% constrain
-% sat
+As noted in Section~\ref{s:2:over}, an important part of the set reasoning
+required in static analysis consists in moving set constraints (\eg, derived
+from the unfolding of an inductive predicate with set constraints) into the
+set domain, and in using the constraints tracked in the set domain in order
+to discharge constraints (\eg, so as to enable the folding of an inductive
+predicate).
+We define the following language in order to express such constraints:
+\begin{definition}[Symbolic Sets]
+  \label{d:1:symsets}
+  {\em Symbolic sets} are defined by the following grammar:
+  \begin{align*}
+    L (\in \symsets) ::=
+    & \ L \wedge L \
+    | \ E \subseteq E \
+    | \ \card{X} = 1 \
+    | \ \top \
+    | \ \bot
+    & E ::=
+    & \ \emptyset \ | \ X \ | \ \comp{E} \ | \ E \cup E
+  \end{align*}
+\end{definition}
+The meaning of these contraints is straightforward, but we give a formal
+definition in Figure~\ref{f:4:symsets} for clarity.
+A model of a set expression $E$ is a concrete state $\state$ and a set
+of concrete values $c$.
+A model of a logical expression $L$ is a concrete state $\state$.
+The concretization is given in terms of the models relationship.
+\begin{figure}[t]
+  \begin{align*}
+    & \state, c \models \emptyset \textrm{ iff } c = \emptyset
+    \qquad
+    \state, c \models X \textrm{ iff } c = \state(X)
+    \\
+    & \state, c \models \comp{E}
+    \textrm{ iff }
+    \state, c' \models{E} \textrm{ and } \forall v \in \values.
+    \; v \in c \leftrightarrow v \not\in c'
+    \\
+    & \state, c \models E_1 \cup E_2
+    \textrm{ iff }
+    \state, c_1 \models E_1 \textrm{ and } \state, c_2 \models E_2
+    \\
+    & \qquad \qquad \qquad \qquad \qquad  \textrm{ and }
+    \forall v \in \values. \; v \in c \leftrightarrow v \in c_1 \vee
+    v \in c_2
+    \\
+    & \state \models L_1 \wedge L_2
+    \textrm{ iff }
+    \state \models L_1 \textrm{ and } \state \models L_2 \qquad
+    \state \models \top \qquad \state \not\models \bot
+    \\
+    & \state \models E_1 \subseteq E_2
+    \textrm{ iff }
+    \state, c_1 \models E_1 \textrm{ and } \state, c_2 \models E_2
+    \textrm{ and } \forall v \in \values. \; v \in c_1 \rightarrow v \in c_2
+    \\
+    & \state \models \card{E} = 1
+    \textrm{ iff }
+    \state, c \models E \textrm{ and } \exists v \in \values. \; c = \{v\}
+    \\
+    & \gamma(L) = \{\ \sigma \ |\  \sigma \models L\ \}
+  \end{align*}
+  \caption{Symbolic sets}
+  \label{f:4:symsets}
+\end{figure}
+We shall also use the following derived logical forms for simplicity.
+%% xr: add membership
+%% xr: consider removing equality (too trivial)
+\[
+\begin{array}{rclcrcl}
+  E_1 \cap E_2 & \defeq & \comp{(\comp{E_1} \cup \comp{E_2})}
+  & \qquad &
+  E_1 = E_2 & \defeq & E_1 \subseteq E_2 \wedge E_2 \subseteq E_1
+  \\
+  E_1 \setminus E_2 &  \defeq & E_1 \cap \comp{E_2}
+  & \qquad &
+  E_1 \uplus E_2 & \defeq & E_1 \cup E_2 \textrm{ if } E_1 \cap E_2 = \emptyset
+  \\
+\end{array}
+\]
+Based, on this language, we require \( \adom \) to provide the following
+abstract operators:
+\begin{compactitem}
+\item \( \adomassume: \adom \times \symsets \rightarrow \adom \), which
+  conservatively represents a constraint into an abstract state, \ie,
+  ensures that, for all \( \astate, L \), \( \gammadom( \astate ) \sinter
+  \gamma( L ) \subseteq \gammadom( \adomassume( \astate, L ) ) \);
+\item \( \adomprove: \adom \times \symsets \rightarrow \{ \true, \false \} \),
+  which conservatively attempts to verify that a symbolic set constraint
+  holds under some abstract states, \ie, ensures that, for all \( \astate,
+  L \), \( \gammadom( \adomassume( \astate, L ) ) = \true \) implies that
+  \( \gammadom( \astate ) \subseteq \gamma( L ) \).
+\end{compactitem}
+% add some example
 
 \paragraph{Lattice operations.}
 % join, widening, le
 
 \paragraph{Old version.}
 
-  A \emph{purely symbolic set abstraction} is an abstraction for sets that places no requirements on the type or capabilities of the values stored within the set.
+A \emph{purely symbolic set abstraction} is an abstraction for sets that
+places no requirements on the type or capabilities of the values stored
+within the set.
 
-\begin{definition}[Symbolic Sets]
-    Symbolic sets are defined by the following grammar:
-    
-    \begin{align*}
-        L ::= & \ L \wedge L \ | \ E \subseteq E \ | \ \card{X} = 1 \ | \ \top \ | \ \bot &
-        E ::= & \ \emptyset \ | \ X \ | \ \comp{E} \ | \ E \cup E
-    \end{align*}
-\end{definition}
+A symbolic set consists of basic set combination operations with equality,
+non-strict subset and simple cardinality.
+While more general symbolic sets can reasoned about by extending the
+cardinality (as in BAPA), the goal here is to perform invariant generation,
+so the problem goes beyond that of deciding implication.
+We must also approximate upper bound operations.
+As a result, the logic is simplified in such a way that is simultaneously
+useful and more amenable to computing upper bounds.
 
-A symbolic set consists of basic set combination operations with equality, non-strict subset and simple cardinality.  While more general symbolic sets can reasoned about by extending the cardinality (as in BAPA), the goal here is to perform invariant generation, so the problem goes beyond that of deciding implication.  We must also approximate upper bound operations.  As a result, the logic is simplified in such a way that is simultaneously useful and more amenable to computing upper bounds.
 
-Symbolic sets represent concrete set states.  A concrete set state maps set variables to sets of values:
-\begin{align*}
-    \state \in \states = \setvars \rightarrow \powerset{\values}
-\end{align*}
-
-The meaning of these contraints is straightforward, but we give a formal definition for clarity.  A model of a set expression $E$ is a concrete state $\state$ and a set of concrete values $c$.  A model of a logical expression $L$ is a concrete state $\state$.  The concretization is given in terms of the models relationship.
-\begin{align*}
-  & \state, c \models \emptyset \textrm{ iff } c = \emptyset \qquad \state, c \models X \textrm{ iff } c = \state(X) \\
-  & \state, c \models \comp{E} \textrm{ iff } \state, c' \models{E} \textrm{ and } \forall v \in \values. \; v \in c \leftrightarrow v \not\in c' \\
-  & \state, c \models E_1 \cup E_2 \textrm{ iff } \state, c_1 \models E_1 \textrm{ and } \state, c_2 \models E_2\\
-  & \qquad \qquad \qquad \qquad \qquad  \textrm{ and } \forall v \in \values. \; v \in c \leftrightarrow v \in c_1 \vee v \in c_2 \\
-  & \state \models L_1 \wedge L_2 \textrm{ iff } \state \models L_1 \textrm{ and } \state \models L_2 \qquad \state \models \top \qquad \state \not\models \bot \\
-  & \state \models E_1 \subseteq E_2 \textrm{ iff } \state, c_1 \models E_1 \textrm{ and } \state, c_2 \models E_2 \textrm{ and } \forall v \in \values. \; v \in c_1 \rightarrow v \in c_2 \\
-  & \state \models \card{E} = 1 \textrm{ iff } \state, c \models E \textrm{ and } \exists v \in \values. \; c = \{v\} \\
-  & \gamma(L) = \{\ \sigma \ |\  \sigma \models L\ \}
-\end{align*}
-
-We will also use the following derived logical forms for simplicity.
-\begin{align*}
- & E_1 = E_2 \defeq E_1 \subseteq E_2 \wedge E_2 \subseteq E_1 \\
- & E_1 \cap E_2 \defeq \comp{(\comp{E_1} \cup \comp{E_2})} \\
- & E_1 \setminus E_2 \defeq E_1 \cap \comp{E_2} \\
- & E_1 \uplus E_2 \defeq E_1 \cup E_2 \textrm{ if } E_1 \cap E_2 = \emptyset
-\end{align*}
 
 \subsection{Relationship with model checking}
 
