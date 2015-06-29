@@ -17,10 +17,36 @@ efficient one.
 
 \subsection{QUIC graphs}
 \label{s:4:2:quic}
+
+A QUIC graph is a directed hypergraph data structure used to represent relational set constraints.  Each edge in the hypergraph corresponds to a subset constrtaint and each hypergraph is a conjunction of subset constraints as described by the following logic $P$.  Each vertex of the graph can be an element of $S$: the empty set, a singleton set, or a set variable:
 % - set of predicates
+\begin{align*}
+  P ::= P \logand P \ | \ S \cap \ldots \cap S \subseteq S \cup \ldots \cup S \qquad
+  S ::= \emptyset \ | \ \{x\} \ | \ X
+\end{align*}
+
 % - concretization function
+QUIC graphs concretizes in a similar fashion to constrain logic as defined in Figure~\ref{f:4:symsets}.  Each edge concretizes according to its logical meaning:
+\begin{align*}
+  \gamma(P_1 \logand P_2) &\defeq \{ \state \ | \ \state \in \gamma(P_1) \logand \state \in \gamma(P_2) \} \\
+  \gamma(\ S_1 \cap \ldots \subseteq S'_1 \cup \ldots) &\defeq \Set{ \state | \begin{array}{@{}l@{}}
+       (\state,c_1) \in \gamma(S_1) \logand \ldots \logand (\state,c'_1) \in \gamma(S'_1) \logand \ldots \\
+       {} \logand c_1 \cap \ldots \subseteq c'_1 \cup \ldots
+    \end{array}
+  } \\
+  \gamma(\emptyset) \defeq \{ (\state, \emptyset) \}
+  \qquad \gamma(\{x\}) &\defeq \{ (\state, \state(x)) \ | \ |\state(x)| = 1 \} \qquad \gamma(X) \defeq \{ (\state, \state(X)) \}
+\end{align*}
+
 % - algorithms main ideas
+QUIC graphs is designed for efficiently performing two operations: (1) $\adomforget$, which matches edges containing the symbol to be forgotten with each other to produce new edges without that symbol; and (2) content reasoning, which is not a design goal for symbolic sets.  The join operation is primarily based on saturation heuristics.  It keeps common conjunctions from both sides of the join.  To aid this process, it uses a form of saturation that produces new conjuncts based on pattern matches.  A sufficiently large set of patterns must be provided to attain precision, but additional patterns increases the cost of joins.
 % - example
+\begin{example}[QUIC graph join]  Consider the following join operation:
+    \begin{align*}
+      X_1 \subseteq X_3 \logand X_3 \subseteq X_2 \ \sqcup \ X_1 \subseteq X_4 \logand X_4 \subseteq X_2
+    \end{align*}
+    There is an obvious result: $X_1 \subseteq X_2$.  Whether or not QUIC graphs derives this result or top is determined by the pattern matches that are installed.  If the pattern $X_a \subseteq X_b \logand X_b \subseteq X_c \Rightarrow X_a \subseteq X_b$ is installed, it will first apply the pattern to both sides and then keep common conjuncts, getting the desired result.  Without that pattern, or a similar substitute, QUIC graphs derives $\top$.
+\end{example}
 
 \subsection{BDD-based Set Constraints}
 \label{s:4:3:bdd}
