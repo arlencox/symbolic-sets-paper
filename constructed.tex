@@ -98,9 +98,11 @@ QUIC graphs concretizes in a similar fashion to constrain logic as defined in Fi
 % - algorithms main ideas
 QUIC graphs is designed for efficiently performing two operations: (1) $\adomforget$, which matches edges containing the symbol to be forgotten with each other to produce new edges without that symbol; and (2) content reasoning, which is not a design goal for symbolic sets.  The join operation is primarily based on saturation heuristics.  It keeps common conjunctions from both sides of the join.  To aid this process, it uses a form of saturation that produces new conjuncts based on pattern matches.  A sufficiently large set of patterns must be provided to attain precision, but additional patterns increases the cost of joins.
 % - example
-\begin{example}[QUIC graph join]  Consider the following join operation:
+\begin{example}[QUIC graph join] \label{ex:Qjoin}  Consider the following join operation:
     \begin{align*}
-      X_1 \subseteq X_3 \logand X_3 \subseteq X_2 \ \sqcup \ X_1 \subseteq X_4 \logand X_4 \subseteq X_2
+      \astate_0 &= X_1 \subseteq X_3 \logand X_3 \subseteq X_2 &
+      \astate_1 &= X_1 \subseteq X_4 \logand X_4 \subseteq X_2 &
+      \adomjoin(\astate_0, \astate_1 )
     \end{align*}
     There is an obvious result: $X_1 \subseteq X_2$.  Whether or not QUIC graphs derives this result or top is determined by the pattern matches that are installed.  If the pattern $X_a \subseteq X_b \logand X_b \subseteq X_c \Rightarrow X_a \subseteq X_b$ is installed, it will first apply the pattern to both sides and then keep common conjuncts, getting the desired result.  Without that pattern, or a similar substitute, QUIC graphs derives $\top$.
 \end{example}
@@ -115,8 +117,23 @@ Binary decision diagrams (BDDs) are a canonical representation of Boolean algebr
 What makes BDDs canonical is that we only consider reduced, ordered BDDs, where it is assumed that there is a total order $\prec$ on the variables.  An $\textrm{ITE}(X,B_t,B_e)$ can only be constructed if $X \prec X'$ for all variables $X'$ in $B_t$ or $B_e$.  Additionally, structural sharing is mandated, so the reuse of the same syntax is referentially identical to any other use of that syntax.
 
 % - encoding of a class of set constraints (it gives the gamma)
+The encoding of constraints maps operators from their constraint form (as in Definition~\ref{d:1:symsets}) to their Boolean algebraic form: $\cup \mapsto \vee, \ \cap \mapsto \wedge, \ \comp{} \mapsto \neg, \ \subseteq \mapsto \rightarrow, \ = \mapsto \leftrightarrow$. After singleton set constraints are dropped, the remaining constraints are directly and exactly represented by the BDD.  
+
 % - algorithms main ideas
+Domain operations are straightforward: $\adomjoin$ and $\adomwiden$ are implemented with the $\vee$ operation, which is precise and does not need any rules or heuristics; $\adomforget$ takes advantage of reasonably efficient quantifier elimination provided by BDDs and uses existential quantifier elimination to drop variables.  Queries such as $\adomisle$ are easily implemented using validity checking functionality provided by BDDs.  Critically, because BDDs are a canonical form, many operations such as $\adomforget$ and $\adomassume$ become much more efficient, whereas the operation $\adomisbot$ becomes an $O(1)$ check.
+
 % - example
+\begin{example}[BDD-based join]  Consider the same inputs as Example~\ref{ex:Qjoin}.  Encoding them to BDDs (and using some Boolean-algebraic notation as shorthand) yields the following results:
+\begin{align*}
+  & \astate_0 = X_1 \subseteq X_3 \logand X_3 \subseteq X_2 = \textrm{ITE}(X_1, X_2 \wedge X_3, \textrm{ITE}(X_2, \textsc{True}, \neg X_3)) \\
+  & \astate_1 = X_1 \subseteq X_4 \logand X_4 \subseteq X_2 = \textrm{ITE}(X_1, X_2 \wedge X_4, \textrm{ITE}(X_2, \textsc{True}, \neg X_3)) \\
+  & \adomjoin(\astate_0, \astate_1 ) = \textrm{ITE}(X_1, X_2 \wedge \textrm{ITE}(X_3, \textsc{True}, X_4), \\
+  & \qquad \qquad \qquad \qquad \qquad \quad \;\; \textrm{ITE}(X_2, \textsc{True}, \textrm{ITE}(X_3, \neg X_4, \textsc{True})))
+\end{align*}
+  The result of this join is equivalent to the set constraints $X_1 \subseteq X_2$, $X_1 \subseteq X_3 \cup X_4$, and $X_3 \cap X_4 \subseteq X_2$, which includes not only the obvious result of $X_1 \subseteq X_2$, but also other, possibly useful results.  It is a precise join.
+\end{example}
+
+BDDs can be converted back into set constraints by iterating over all constraints they imply.  This is an expensive operation that is equivalent to iterating over all of the prime implicants of the negation of the Boolean function represented by the BDD.  Each prime implicant can be converted into a conjunct of the form used by QUIC graphs.
 
 \subsection{The Equalities Domain Functor: Compact Equality Constraints}
 \label{s:4:4:eqs}
