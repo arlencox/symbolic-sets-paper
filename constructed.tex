@@ -10,10 +10,67 @@ efficient one.
 
 \subsection{Linear Set Constraints}
 \label{s:4:1:lin}
-% - set of predicates
-% - concretization function
-% - main algorithm principle: lazy, quasi normalization
-% - example (from the MemCAD test cases
+\newcommand{\adomlin}{\adom_{\zcl}}
+\newcommand{\gammalin}{\gamma_{\zcl}}
+\paragraph{Abstract elements and their concretization.}
+Our first set abstract domain relies on {\em linear} set equality
+constraints, of the form \( \setvx = \{ y_0, \ldots, y_k \} \suplus
+\setvz_0 \suplus \ldots \suplus \setvz_l \).
+The advantage of this representation is to provide a rather straightforward
+normalization of the representation of constraints.
+Note they also include emptiness constraints.
+Our implementation of abstract domain \( \adomlin \) describes four kinds
+of constraints:
+\begin{compactitem}
+\item {\em linear} constraints of the form \( \setvx = \setvy_0 \suplus
+  \ldots \suplus \setvy_k \suplus \setvz_0 \suplus \ldots \suplus
+  \setvz_l \), where \( \setvy_0, \ldots, \setvy_k \) are singleton
+  (in our implementation, each variable may appear at most {\em once}
+  as the left hand side of such a constraint);
+\item inclusion constraints of the form \( \setvy \subseteq \setvx \);
+\item equality constraints of the form \( \setvy = \setvx \).
+\end{compactitem}
+Thus, an element of \( \adomlin \) is either \( \bot \) or a conjunction of
+such constraints.
+The associated concretization \( \gammalin: \adomlin \rightarrow
+\partsof{\states} \) is of the same form as that of the symbolic sets
+language of Definition~\ref{d:1:symsets} (thus, we do not formalize it
+in full details).
+The machine representation of our implementation utilizes persistent
+dictionaries, which reduces basic queries for facts (such as: ``does
+abstract state \( \astate \) entail that \( \setvx \subseteq \setvy
+\suplus \setvz \)~?'') to dictionary searches.
+
+\paragraph{Abstract operators.}
+The core algorithm of \( \adomlin \) normalizes an abstract values by
+expanding nested linear constraints:
+for instance, \( \setvx_0 = \setvx_1 \suplus \setvx_2 \wedge \setvx_1
+= \setvx_3 \suplus \setvx_4 \) is rewritten into  \( \setvx_0 = \setvx_2
+\suplus \setvx_3 \suplus \setvx_4 \wedge \setvx_1 = \setvx_3 \suplus
+\setvx_4 \).
+This process terminates as constraints represented in \( \adomlin \)
+do not contain cycles.
+It is performed incrementally by all abstract operations.
+
+Abstract operations \( \adomisbot, \adomassume, \adomprove \) are all
+made very fast by this normalization.
+Operation \( \adomforget \) simply drops all constraints that involve
+a given set variable.
+Finally, \( \adomjoin \) and \( \adomwiden \) need to {\em generalize}
+constraints:
+\begin{example}[]
+  Let us assume that \( \astate_0 \) (\resp, \( \astate_1 \)) stands for
+  the set of constraints \( \setvx_0 = \setvx_1 \suplus \setvx_2
+  \wedge \setvx_3 = \emptyset \) (\resp, \( \setvx_0 = \setvx_1 \suplus
+  \setvx_2 \suplus \setvx_3 \)).
+  Then \( \adomjoin( \astate_0, \astate_1 ) \) returns the constraint
+  \( \setvx_0 = \setvx_1 \suplus \setvx_2 \suplus \setvx_3 \).
+\end{example}
+\memcad~\cite{memcad:15:sas} relies on \( \adomlin \) to represent set
+constraints since it mainly needs to express constraints over set
+partitions.
+In the other hand, \( \adomlin \) is not adapted to the precise
+description of non disjoint unions.
 
 \subsection{QUIC graphs}
 \label{s:4:2:quic}
