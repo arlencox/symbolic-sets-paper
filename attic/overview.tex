@@ -1,0 +1,114 @@
+\section{Overview}
+\label{s:2:over}
+In this section, we present two static analyses that make use of set
+reasoning, in order to compute high level semantic properties of
+programs.
+These analyses rely on abstract interpretation~\cite{cc:popl:77} and
+on an abstraction of program states, that describes data structures
+and their contents.
+An abstract domain defines a set of predicates that an analysis may
+use, as well as operators to over-approximate the effect of program
+behaviors on these predicates, and their implementation.
+
+\paragraph{Inferrence of properties of open objects.}
+Dynamic programming languages such as JavaScript feature {\em Open objects}
+that support dynamic addition and deletion of attributes and iteration over
+them.
+The analysis presented in~\cite{hoo:14:sas} computes relations among
+objects, so as to verify programs such as a copy of the attributes of an
+object into another object.
+To achieve this, it needs to infer relations between the sets of attributes
+of distinct objects.
+Objects have an unbounded number of attributes, thus the analysis requires
+some abstraction over the attributes and their contents.
+\begin{figure}[t]
+  \newcommand{\picscale}{1}
+  \begin{center}
+    \subfigure[A concrete state]{ \label{f:1a:hoo:conc}
+      \tikzpics{\picscale}{hoo-conc}
+    }
+    \quad
+    \subfigure[Corresponding abstract state]{ \label{f:1b:hoo:abs}
+      \tikzpics{\picscale}{hoo-abs}
+    }
+  \end{center}
+  \caption{Open objects and their abstraction}
+  \label{f:1:hoo}
+\end{figure}
+Figure~\ref{f:1a:hoo:conc} represents a very simplified state, after
+the copy of the contents of objects \( \vary \) into object \( \varx \).
+This picture does not show field contents which are ignored here. % end !!!
+Instead, we focus on the set of attributes each object comprises since
+taking contents into account would not change much the demonstration.
+To abstract precisely the relations between the attributes of both objects
+(\ie, in this case, all attributes of \( \vary \) are also attributes of
+\( \varx \)), we need to describe the fields of each object as the union
+of a series of sets of attributes, and to carry out relations over these
+sets.
+Figure~\ref{f:1b:hoo:abs} depicts such an abstract state, where \( X, Y \)
+stand for the set of all attributes of objects \( \varx, \vary \).
+The set of fields of \( \varx \) is partitioned into two subsets \( X_0,
+X_1 \), and \( X_0 \) is exactly equal to the set of all the attributes
+of \( \vary \).
+Moreover, to infer invariants such as the abstract state shown in
+Figure~\ref{f:1b:hoo:abs}, the analysis needs to compute both the
+object partitions and the associated set relations, in the same time
+as those depend on each other.
+When dealing with updates, the analysis {\em expands} the partitions and the
+corresponding set relations.
+Conversely, the fixpoint computation causes the folding of partitions,
+which requires the computation of {\em compact disjunctions} of set
+properties.
+Last, the verification of a post-condition requires the {\em prooving}
+of set properties under a set of assumptions (for instance, that \( Y
+\subseteq X \), under the abstract state of Figure~\ref{f:1b:hoo:abs}).
+
+\paragraph{Shape analysis in presence of unstructured sharing.}
+We now discuss a second example of static analysis that needs to perform
+set reasoning.
+The shape analysis for data-structures with unbounded sharing presented
+in~\cite{memcad:15:sas} relies on separation logic~\cite{r:lics:02} to
+describe memory states, and on inductive definitions to summarize
+unbounded structures such as lists.
+Unstructured sharing is very challenging as it cannot be described using
+conventional inductive definitions.
+Figure~\ref{f:2a:memcad:conc} displays the representation of a three nodes
+graph using an adjacency list data-structure.
+To summarize such a structure using inductive predicates in separation
+logic, \cite{memcad:15:sas} proposes to augment the list inductive
+predicates with set information, which express where edges may point to.
+This representation is shown in Figure~\ref{f:2b:memcad:sum} in a form
+where the first node is kept materialized.
+It both asserts that edges of that node as well as edges from other nodes
+point to the address of a valid node, namely an element of \( \{ \naddr{0}
+\} \suplus \mcE \).
+\begin{figure}[t]
+  \newcommand{\picscale}{1}
+  \begin{center}
+    \subfigure[A concrete state]{ \label{f:2a:memcad:conc}
+      \tikzpics{\picscale}{memcad-conc}
+    }
+    \quad
+    \subfigure[Summarization principle]{ \label{f:2b:memcad:sum}
+      \tikzpics{\picscale}{memcad-abs}
+    }
+  \end{center}
+  \caption{Summarization of an adjacency list-based graph representation}
+  \label{f:2:memcad}
+\end{figure}
+Therefore, the analysis needs to track the set information adjoined to
+the structural inductive definitions.
+When a node or edge is materialized, the set of graph relations should
+be extended so as to reflect the knowledge about its successor(s).
+Conversely, the folding of inductive predicates necessitates the
+verification that some set relations hold in the abstract level.
+
+\paragraph{Need for set reasoning.}
+Both analyses consist of a composite abstract domain, that comprises a
+{\em structural abstract domain} describing the shape of structures, and
+of a {\em set abstract domain} expressing relations among set and value
+(pointers, field names, contents...) entities.
+The operations that need to be performed in the set abstract domain are
+also similar, and mainly include the meet with additional constraints,
+the generalization of constraints, and the entailment checking.
+
