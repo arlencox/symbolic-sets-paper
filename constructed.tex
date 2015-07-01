@@ -137,15 +137,63 @@ BDDs can be converted back into set constraints by iterating over all constraint
 
 \subsection{The Equalities Domain Functor: Compact Equality Constraints}
 \label{s:4:4:eqs}
+\newcommand{\eqrep}{\ensuremath{Q}}
 % - origin of the equalities problem (cases where there are too many variables
 %   and most of them are equal, consequences in terms of complexity)
+
+When analyzing real programs, in addition to complex set constraints, there are often many very simple equality constraints of the form $X = Y$.  These can be a problem in several ways.  In BDDs, for example, while equalities are normalized and handled precisely, they can grow the size of the BDDs significantly.  This results in significantly increased memory usage and decreased efficiency since many BDD operation rebuild the BDD.  In QUIC graphs, equalities grow the size of the graph, and place significantly more load on the pattern matching system, potentially causing a blow up in the number of constraints because QUIC graphs can represent each variant of an expression rewritten using all available equalities.  In linear set abstractions, there are similar potential problems.
+
+As a result, abstractions like QUIC graphs and the linear set abstraction have special handling for equality.  This improves performance and precision at the cost of complexity.  Instead, much of this complexity can be moved outside the abstraction and handled by lifting the abstraction to one that keeps track of equalities separately from other kinds of constraints.
+
 % - principle of the functor
+The equality functor serves as an intermediary between the domain interface and the abstract domain that is being lifted.  It intercepts equality constraints and handles them externally preventing them from being seen by the underlying abstract domain.  This saves the domain from the cost and complexity of handling the equalities.
+
 % - abstract states and concretization
+The equality functor defines a set of equivalence classes $\eqrep$.  The set of equivalence classes is a map $\setvars \rightarrow \setvars$ that maps each variable to the chosen representative for the equivalence class.  The functor then lifts an abstract state $\adom$ into a tuple $(\adom, \eqrep)$.  In the lifting, $\adom$ is restricted to only have symbols that are representatives for the equivalence class.  Therefore, when an equality is added that merges two equivalence classes, the resulting representative replaces the two previous representatives in $\adom$.
+
+The concretization ensures that all symbols in the same equivalence class map to the same concrete set:
+\begin{align*}
+\gamma((\eqrep,\adom)) = \{ \ \state \ | \ \state \in \gamma(\adom) \wedge \forall X,Y \in \setvars^2. \; \eqrep(X) = \eqrep(Y) \rightarrow \state(X) = \state(Y) \ \}
+\end{align*}
+
+Domain operations $\adomjoin$, $\adomwiden$, and $\adomisle$, unify their corresponding $\eqrep$s pushing any non-common equalities into the underlying domain.  This ensure that the underlying domain determines the precision, but it is not required to handle most of the load of the equalities.  The $\adomassume$ operation rewrites the constraint, extracting the equalities and rewriting remaining variables to their representatives before passing the constraint to the underlying domain.
+ 
+
 % - example
+\begin{example}[Equality functor join]
+Consider the following two abstract states, where the underlying domain is just shown as symbolic set constraints:
+\begin{align*}
+  \astate_0 = ([W \mapsto W, X \mapsto W, Y \mapsto W], W \subseteq Z) \\
+  \astate_1 = ([X \mapsto X, Y \mapsto X], W \subseteq X \wedge X \subseteq Z)
+\end{align*}
+In the join, the equivalence classes are unified, producing the resulting $\eqrep$: $[X \mapsto X, Y \mapsto X]$.  The equality $W = X$ from $\astate_0$ is not represented in the unification, so it is added back to the underlying domain in $\astate_0$.  The result is therefore
+\begin{align*}
+  ([X \mapsto X, Y \mapsto X], \adomjoin(W = X \wedge W \subseteq Z, W \subseteq X \wedge X \subseteq Z))
+\end{align*}
+\end{example}
 
 \subsection{The Packing Domain Functor: Sparse Constraints}
 \label{s:4:5:packs}
 % - issue with relational abstract domains
+Most relational domains have a complexity that is related to the number of variables constrained by the abstract state.  For example, BDDs, in the worst case, are exponential in the number of variables.  However, in many programs, there are relatively small clusters of variables that are related.  Therefore it is possible to increase the efficiency of analysis by representing each cluster of variables by a separate abstract state~\cite{ens:pldi:03}.
+
 % - packing principle (citations to Astree)
+If each of $m$ clusters of $n$ variables is represented by a separate abstract state, rather than operations having a complexity of, for example, $O(2^{m\cdot n})$, they can have complexity $O(m\cdot 2^n)$.  To do this, initially all variables are assumed to be in their own cluster.  Clusters are merged whenever variables from each cluster occur in the same constraint.  In this way the clusters are dynamically determined, which is required when an abstract domain is used as a library and thus a pre-analysis cannot be performed.
+
 % - abstract states and concretization
+An abstract state in the cluster functor consists of one of three values: $\top$, $\bot$, or a map $M : \#_M \rightarrow \adom$ that maps cluster ids in $\#_M$ to abstract states from the domain being lifted.  The $\top$ and $\bot$ values concretize as they do in Figure~\ref{f:4:symsets}.  The map concretizes as follows:
+\begin{align*}
+  \gamma(M) = \{ \state \ | \ \forall \astate \in \textrm{Range}(M). \; \state \in \gamma(\astate) \}
+\end{align*}
+
 % - example
+\begin{example}[Constraining a packed abstract state]
+Consider the following abstract state represented by the logic from Definition~\ref{d:1:symsets}, lifted into three packs with ids $0$, $1$, and $2$:
+\begin{align*}
+  \astate_0 = \qquad 0 \mapsto X_0 \subseteq X_1 \qquad 1 \mapsto Y_0 \subseteq Y_1 \qquad 2 \mapsto Z_0 \subseteq Z_1
+\end{align*}
+The operation $\adomassume(\astate_0, Y_1 \subseteq Y_2)$ operates only on pack id $1$.  It does not have to involve any computation on packs $0$ or $1$.  The resulting pack $1$ is: $1 \mapsto \adomassume(Y_0 \subseteq Y_1, Y_1 \subseteq Y_2)$.  However, if the operation $\adomassume(\astate_0, X_1 \subseteq Y_0)$ is performed, the packs are merged and the following operations are performed:
+\begin{align*}
+\astate_0 = \quad 0 \mapsto \adomassume(\adommeet(X_0 \subseteq X_1, Y_0 \subseteq Y_1), X_1 \subseteq Y_0) \qquad 2 \mapsto Z_0 \subseteq Z_1
+\end{align*}
+\end{example}
