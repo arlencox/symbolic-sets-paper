@@ -5,7 +5,7 @@ representation, and abstract operations following the signature given in
 Section~\ref{s:3:2:sign}.
 In this section, we introduce three basic set abstract domains (respectively
 based on linear constraints, QUIC graphs, and BDDs) and two set abstract
-domain functors, that map a set domain into another, more expressive or
+domain functors, that lift a set domain into another, more expressive or
 efficient one.
 
 \subsection{Linear Set Constraints}
@@ -19,12 +19,12 @@ constraints, of the form \( \setvx = \{ y_0, \ldots, y_k \} \suplus
 The advantage of this representation is to provide a rather straightforward
 normalization of the representation of constraints.
 Note they also include emptiness constraints.
-Our implementation of abstract domain \( \adomlin \) describes four kinds
+Our implementation of abstract domain \( \adomlin \) describes three kinds
 of constraints:
 \begin{compactitem}
 \item {\em linear} constraints of the form \( \setvx = \setvy_0 \suplus
   \ldots \suplus \setvy_k \suplus \setvz_0 \suplus \ldots \suplus
-  \setvz_l \), where \( \setvy_0, \ldots, \setvy_k \) are singleton
+  \setvz_l \), where \( \setvy_0, \ldots, \setvy_k \) are singletons
   (in our implementation, each variable may appear at most {\em once}
   as the left hand side of such a constraint);
 \item inclusion constraints of the form \( \setvy \subseteq \setvx \);
@@ -83,7 +83,11 @@ A QUIC graph is a directed hypergraph data structure used to represent relationa
 \end{align*}
 
 % - concretization function
-QUIC graphs concretizes in a similar fashion to constrain logic as defined in Figure~\ref{f:4:symsets}.  Each edge concretizes according to its logical meaning:
+% xr: concretizes => concretize ? (to me QUIC graphs is plural, but you
+%     consistantly treat it as singular, so I wonder what to do)
+QUIC graphs concretizes in a similar fashion to constrain logic as defined
+in Figure~\ref{f:4:symsets}.
+Each edge concretizes according to its logical meaning:
 \begin{align*}
   \gamma(P_1 \logand P_2) &\defeq \{ \state \ | \ \state \in \gamma(P_1) \logand \state \in \gamma(P_2) \} \\
   \gamma(\ S_1 \cap \ldots \subseteq S'_1 \cup \ldots) &\defeq \Set{ \state | \begin{array}{@{}l@{}}
