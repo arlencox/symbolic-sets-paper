@@ -1,7 +1,7 @@
 \section{Overview}
 \label{s:2:over}
 In this section, we present two static analyses that make use of set
-reasoning, in order to compute high level semantic properties of
+reasoning in order to compute high level semantic properties of
 programs.
 These analyses rely on abstract interpretation~\cite{cc:popl:77} and
 on an abstraction of program states, that describes data structures
@@ -70,7 +70,7 @@ unfolding generates set facts (such as \( \mcN = \{ \naddr{0} \} \suplus
 \mcE \)) which have to be tracked along with the memory abstraction.
 In order to ensure termination, the analysis performs {\em folding} at
 loop head points.
-Essentially, folding reconstructs summary predicates, hence has to
+Essentially, folding reconstructs summary predicates, and hence has to
 discharge set constraints.
 After folding, certain set variables (\eg, attached to a previously
 unfolded structure) disappear, thus the set abstract domain should
@@ -85,7 +85,7 @@ drop set variables, and to generalize set abstractions.
 \paragraph{Inferrence of properties of open objects.}
 We now discuss a second example of static analysis that needs to perform
 set reasoning.
-Dynamic programming languages such as JavaScript feature {\em Open objects}
+Dynamic programming languages such as JavaScript feature {\em open objects}
 that support dynamic addition and deletion of attributes and iteration over
 them.
 The analysis presented in~\cite{hoo:14:sas} computes relations among
@@ -113,7 +113,7 @@ Figure~\ref{f:3a:hoo:conc} represents a very simplified state, after
 the copy of the contents of objects \( \vary \) into object \( \varx \).
 This picture does not show field contents which are ignored here. % end !!!
 Instead, we focus on the set of attributes each object comprises since
-taking contents into account would not change much the demonstration.
+taking contents into account would not change the demonstration much.
 To abstract precisely the relations between the attributes of both objects
 (\ie, in this case, all attributes of \( \vary \) are also attributes of
 \( \varx \)), we need to describe the fields of each object as the union
