@@ -1,2 +1,20 @@
 \section{Solver-based Abstractions}
 \label{sec:solvers}
+
+Because one of the core components of set abstraction is the Boolean algebra, it is possible to construct abstract domains from off-the-shelf satisfiability solvers.  The construction relies upon the fact that the standard Boolean algebra is a finite height lattice ordered by implication.  This means that no specific invariant generation procedure is required.
+
+The syntax of the abstraction is the standard Boolean algebra with existential quantification.  There are two reasons this is a good logic to use.  First, it is a fairly well supported logic for which there are efficient solvers.  Second, it remains finite height and thus needs no specialized invariant generation procedure as would be required with a set logic such as BAPA~\cite{knr:jar:06}.  Since cardinality is not a key requirement for symbolic sets, the analysis can often be sufficient without it.
+
+Domain operations are translated into Boolean algebra formulas.  $\adomjoin(\astate_1,\astate_2)$ translates into $\astate_1 \vee \astate_2$.  $\adomassume(\astate, L)$ translates into $\astate \wedge \textrm{conv}(L)$, assuming that $\textrm{conv}(L)$ converts the constraint $L$ into its Boolean algebra equivalent as in Section~\ref{s:4:3:bdd}.  $\adomforget(\astate, X)$ translates into $\exists X. \; \astate$.  These are accumulated across the whole analysis and thus may grow arbitrarily deep.  It is possible that on-the-fly simplification could be used, but we elect to use whatever internal functionality is provided by the solver (in this case Z3~\cite{mb:tacas:08}).
+
+Query operations are translated into solver queries.  $\adomisle(\astate_1, \astate_2)$ translates to $\textsc{Valid}(\astate_1 \rightarrow \astate_2)$.  This is implemented incrementally by conditionally adding constraints for each query and checking satisfiability under assumptions.  The $\adomisbot(\astate)$ query translates into $\textsc{Valid}(\neg \astate)$.
+
+\begin{example}[Solver-based abstraction operations]
+Domain operations accumulate constraints, so simplification is performed by the solver when a query happens.  In the following sequence, there are no queries, so constraints only accumulate.
+\begin{align*}
+  \astate_0 &= \top & &= \textsc{True} \\
+  \astate_1 &= \adomassume(\astate_0, X \subseteq Y \wedge Y \subseteq Z) & &= \textsc{True} \wedge X \rightarrow Y \wedge Y \rightarrow Z \\
+  \astate_2 &= \adomforget(\astate_1, Y) & &= \exists Y. \; \textsc{True} \wedge X \rightarrow Y \wedge Y \rightarrow Z
+\end{align*}
+If the query $\adomprove(\astate_2, X \subseteq Z)$ is performed, the following check is made: $\textsc{Valid}((\exists Y. \; \textsc{True} \wedge X \rightarrow Y \wedge Y \rightarrow Z) \rightarrow (X \rightarrow Z))$.  This holds trivially.
+\end{example}
