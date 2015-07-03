@@ -1,2 +1,15 @@
 \section{Evaluation}
 \label{sec:evaluation}
+
+In this section, we evaluate the set abstractions.  We aim to answer the following questions about set abstractions. Can set abstractions be sufficiently precise to be useful? Can precision be made available while providing scalability? What trade-offs are necessary to achieve scalability?  To evaluate these questions, we look at three different applications of set abstractions: (1) The expressible subset of tests of the Python set data structure (as used for QUIC graphs~\cite{ab:ecoop:13}); (2) Traces of set domain operations as used in JSAna to verify functions in selected JavaScript libraries (from \cite{hoo:14:sas,desync:15:esop}); and (3) Traces of set domain operations as used in Memcad to perform shape analysis in the presence of unstructured sharing (from \cite{memcad:15:sas}).
+
+The sufficiency of precision is addressed by the particular applications.  In the benchmarks
+% want to show that set abstractions can scale.
+
+\begin{table}
+\input{data/data_table}
+\end{table}
+
+% want to show expert system for deciding on set abstractions
+
+% want to show that SMT has performance difficulties due to the laziness of the abstraction
