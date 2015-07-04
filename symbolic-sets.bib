@@ -4,14 +4,10 @@
 @string{ACM    = "ACM"}
 @string{AMAST  = "AMAST"}
 @string{ASIAN  = "ASIAN"}
-% @string{APLAS  = "Asian Conference on Programming Languages And Systems
-%                   (APLAS)"}
 @string{APLAS  = "APLAS"}
-% @string{CAV    = "Conference on Computer Aided Verification (CAV)"}
 @string{CAV    = "CAV"}
 @string{CC     = "CC"}
 @string{ECOOP  = "ECOOP"}
-% @string{ECOOP  = "European Conference on Object Oriented Programming (ECOOP)"}
 @string{EMSOFT = "EMSOFT"}
 @string{ENTCS  = "ENTCS"}
 @string{ESOP   = "ESOP"}
@@ -21,25 +17,16 @@
 @string{ICALP  = "ICALP"}
 @string{JAR    = "J. Autom. Reasoning"}
 @string{LCTES  = "LCTES"}
-% @string{LICS   = "Symposium on Logics In Computer Science (LICS)"}
 @string{LICS   = "LICS"}
 @string{PEPM   = "PEPM"}
 @string{PLDI   = "PLDI"}
 @string{PLILP  = "PLILP"}
-% @string{POPL   = "Symposium on Principles of Programming Languages (POPL)"}
 @string{POPL   = "POPL"}
-% @string{SAS    = "Static Analysis Symposium (SAS)"}
 @string{SAS    = "SAS"}
 @string{TACAS  = "TACAS"}
-% @string{TACAS  = "Conference on Tools and Algorithms for the Construction
-%                   and Analysis of Systems (TACAS)"}
 @string{TASE   = "TASE"}
 @string{TLCA   = "TLCA"}
-% @string{TOPLAS = "ACM Transactions on Programming Languages and Systems
-%                   (TOPLAS)"}
 @string{TOPLAS = "TOPLAS"}
-% @string{VMCAI  = "Conference on Verification, Model Checking,
-%  and Abstract Interpretation (VMCAI)"}
 @string{VMCAI  = "VMCAI"}
 @string{LNCS   = "Lecture Notes in Computer Science"}
 
@@ -56,6 +43,15 @@
   OPTpages     = {238-252},
   OPTbibsource = {DBLP, http://dblp.uni-trier.de}
 }
+@article{mc:toplas:86,
+  author    = {Edmund M. Clarke and E. Allen Emerson and A. Prasad Sistla},
+  title     = {Automatic Verification of Finite-State Concurrent Systems Using Temporal
+    Logic Specifications},
+  journal   = TOPLAS,
+  volume    = {8},
+  number    = {2},
+  year      = {1986},
+}
 @inproceedings{r:lics:02,
   author    = {Reynolds, John},
   title     = {Separation Logic: A Logic for Shared Mutable Data Structures},
@@ -70,6 +66,18 @@
   title     = {A static analyzer for large safety-critical software},
   booktitle = PLDI,
   year      = {2003},
+}
+@inproceedings{interp:cav:03,
+  author    = {Kenneth L. McMillan},
+  title     = {Interpolation and SAT-Based Model Checking},
+  booktitle = CAV,
+  year      = {2003},
+}
+@inproceedings{bradley:vmcai:06,
+  author    = {Aaron R. Bradley and Zohar Manna and Henny B. Sipma},
+  title     = {What's Decidable About Arrays?},
+  booktitle = VMCAI,
+  year      = {2006},
 }
 @article{knr:jar:06,
   author    = {Viktor Kuncak and Huu Hai Nguyen and Martin C. Rinard},
