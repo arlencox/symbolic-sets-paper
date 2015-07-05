@@ -99,51 +99,20 @@ point to the address of a valid node, namely an element of \( \{ \naddr{0}
 The analysis of~\cite{memcad:15:sas} introduces a summary predicate
 \( \textbf{graph}( \naddr{0}, \mcN ) \) where \( \naddr{0} \) is the
 address of the first node and \( \mcN \) the set of all node addresses.
+This predicate is defined by induction over the ``backbone'' of the
+structure, and fully takes into account the property that all
+\( \fldnext \) edges point to a valid node address in \( \naddr{0} \).
+Henceforth, abstract states comprise both a {\em memory} part (which
+consists of a formlula in separation logic with inductive predicates)
+and a {\em set abstraction}.
 
-\begin{wrapfigure}{r}{0.335\textwidth}
-  \vspace{-8mm}
-  \scalebox{0.75}{
-    \(
-    \begin{array}{l}
-      \varx = \ldots; \texttt{ // points to } \naddr{0}; \\
-      \vary = \varx \cfield \fldedges; \\
-      \cwhile( \varl \not= \nullptr ) \{ \\
-      \qquad \texttt{// visit the next edge} \\
-      \qquad \vary = \vary \cfield \fldnext; \\
-      \qquad \ldots
-      \} \\
-    \end{array}
-    \)
-  }
-\end{wrapfigure}
-The analysis needs to track the set information adjoined to the
-structural inductive definitions.
-As an example, the analysis of the inset program needs to materialize
-objects storing nodes and edges to deal with updates, which requires
-{\em unfolding} the summary predicate;
-unfolding generates set facts (such as \( \mcN = \{ \naddr{0} \} \suplus
-\mcE \)) which have to be tracked along with the memory abstraction.
-In order to ensure termination, the analysis performs {\em folding} at
-loop head points.
-Essentially, folding reconstructs summary predicates, and hence has to
-discharge set constraints.
-After folding, certain set variables (\eg, attached to a previously
-unfolded structure) disappear, thus the set abstract domain should
-drop them.
-Last, the computation of invariants requires a {\em generalization}
-of set predicates to take place.
-Therefore, we note the set abstract domain should provide a
-representation for an appropriately chosen family of set predicates
-as well as facilities to assume or discharge set constraints, to
-drop set variables, and to generalize set abstractions.
+To compute such summaries, the analysis needs to perform similar
+operations as the analysis for open objects, in order to add set
+constraints to the set abstract state, to prove set constraints,
+to remove set variables and to generalize abstract states.
 
-\paragraph{Need for set reasoning.}
-Both analyses consist of a composite abstract domain, that comprises a
-{\em structural abstract domain} describing the shape of structures, and
-of a {\em set abstract domain} expressing relations among set and value
-(pointers, field names, contents...) entities.
-The set abstract domain operations both analyses need are also strikingly
-similar.
-% that need to be performed in the set abstract domain are
-% also similar, and mainly include the meet with additional constraints,
-% the generalization of constraints, and the entailment checking.
+% \paragraph{Need for set reasoning.}
+% Both analyses consist of a composite abstract domain, that comprises a
+% {\em structural abstract domain} describing the shape of structures, and
+% of a {\em set abstract domain} expressing relations among set and value
+% (pointers, field names, contents...) entities.
