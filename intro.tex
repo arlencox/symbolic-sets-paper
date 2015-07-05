@@ -1,8 +1,5 @@
 \section{Introduction}
 \label{s:1:intro}
-
-% Don't forget to add references!!!
-
 It is well understood that the verification of program properties that
 involve data structures is a challenging problem~\cite{jahob:thesis:07,compass:popl:11,fixbag:cav:11,celia:vmcai:12,ab:ecoop:13,hoo:14:sas,memcad:15:sas}.
 There are a multitude of reasons for this, but one key reason is that
@@ -57,7 +54,7 @@ def extend(dst, src):
   \subfigure[Set abstraction at \texttt{\textit{invariant point}}]{%
     \usebox\exproginv}
   \caption{Set constraints can relate portions of data structures}
-  \label{fig:intro-example}
+  \label{fig:intro-example} \label{f:1:intro}
 \end{figure}
 
 This paper focuses on abstractions for states described by the logic for \emph{symbolic sets}.  The logic consists of a Boolean algebra over the set variables with singleton sets. We find that this subset is sufficiently large to be useful and we
@@ -65,7 +62,16 @@ believe that it serves as a good starting point for extensions to the
 logic, such as reasoning about explicit set contents or more precise
 cardinality.
 
-However, despite the fact that we are not reasoning about the values contained in sets or complex cardinalities, Boolean algebras, by themselves, are challenging for invariant generation.  Naive approaches such as saturation and pattern matching rarely work without complex heuristics~\cite{fixbag:cav:11,ab:ecoop:13}.  It is unavoidable that the worst-case time for precise invariant generation will be exponential because of the Boolean algebra. However, it is desirable that invariant generation should be efficient in the common case, and unlike systems that involve complex heuristics, lose precision only in understandable and predictable ways.
+However, despite the fact that we are not reasoning about the values
+contained in sets or complex cardinalities, Boolean algebras, by
+themselves, are challenging for invariant generation.
+Naive approaches such as saturation and pattern matching rarely work
+without complex heuristics~\cite{fixbag:cav:11,ab:ecoop:13}.
+It is unavoidable that the worst-case time for precise invariant
+generation will be exponential because of the Boolean algebra.
+However, it is desirable that invariant generation should be efficient
+in the common cases, and unlike systems that involve complex heuristics,
+lose precision only in understandable and predictable ways.
 
 % AC: seems like this could be tightened up and combined with the next paragraph
 In this paper we aim to address the performance and precision challenges

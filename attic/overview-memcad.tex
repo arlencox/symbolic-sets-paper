@@ -10,61 +10,6 @@ An abstract domain defines a set of predicates that an analysis may
 use, as well as operators to over-approximate the effect of program
 behaviors on these predicates, and their implementation.
 
-\paragraph{Inferrence of properties of open objects.}
-Dynamic programming languages such as JavaScript feature {\em open objects}
-that support dynamic addition and deletion of attributes and iteration over
-them.
-The analysis presented in~\cite{hoo:14:sas} computes relations
-among objects, so as to verify programs as the piece of code of
-Figure~\ref{f:1:intro}.
-To achieve this, it infers relations between the sets of attributes
-of distinct objects.
-Objects have an unbounded number of attributes, thus the analysis requires
-some abstraction over the attributes and their contents.
-\newcommand{\varsrc}{\cvar{src}}
-\newcommand{\vardst}{\cvar{dst}}
-\begin{figure}[t]
-  \newcommand{\picscale}{0.82}
-  \begin{center}
-    \tikzpics{\picscale}{hoo-inv}
-  \end{center}
-  \caption{Open objects and their abstraction}
-  \label{f:2:hoo}
-\end{figure}
-Figure~\ref{f:2:hoo} represents a very simplified state, at the loop
-head and after two iteration (thus two fields were copied).
-We focus on the set of attributes of each object, and ignore their
-contents (which could be described using similar techniques).
-To abstract precisely the relations between the attributes of both objects
-(\ie, in this case, copied attributes are common to both objects), we need
-to describe the fields of each object as the union of a series of sets of
-attributes, and to express relations among these sets.
-The first purpose of the set abstract domain is to represent such set
-relations.
-The right hand side of Figure~\ref{f:2:hoo} depicts such an abstract
-state, where \( X_n, X_r, X_v \) stand for sets of attributes, which are
-made explicit, in the case of the left hand side concrete state.
-
-Moreover, to infer these invariants, the analysis needs to reason
-both about object structures and about attributes sets:
-\begin{asparaitem}
-\item Initially, no set relation should be assumed, and the fields of
-  each object should be associated to a set of attributes;
-\item When the analysis enters the body of the loop, it needs to
-  {\em single out} attribute \( \mathtt{x} \), thus, to replace set
-  \( X_v \) by \( X_v \suplus \{ \mathtt{x} \} \) (which produces the
-  equalities of Figure~\ref{f:2:hoo});
-\item When it exits the loop, the analysis should {\em generalize}
-  both the object and set constraints abstractions, which requires
-  to {\em eliminate} singleton \( \{ \mathtt{x} \} \) from the
-  equations (it is visible only in the loop body) and to synthesize
-  a new, more general collection of constraints.
-\end{asparaitem}
-To allow these steps, the set abstraction should provide basic operations
-over set predicates, including (1) the addition of a set constraint, (2)
-the proving of a set constraint, (3) the removal of a set variable and
-(4) the generalization of two set abstract states.
-
 \paragraph{Shape analysis in presence of unstructured sharing.}
 The shape analysis for data-structures with unbounded sharing presented
 in~\cite{memcad:15:sas} relies on separation logic~\cite{r:lics:02} to
@@ -72,12 +17,12 @@ describe memory states, and on inductive definitions to summarize
 unbounded structures such as lists.
 Unstructured sharing is very challenging as it cannot be described using
 conventional inductive definitions.
-Figure~\ref{f:3a:memcad:conc} displays the representation of a three nodes
+Figure~\ref{f:2a:memcad:conc} displays the representation of a three nodes
 graph using an adjacency list data-structure.
 To summarize such a structure using inductive predicates in separation
 logic, \cite{memcad:15:sas} proposes to augment the list inductive
 predicates with set information, which express where edges may point to.
-This representation is shown in Figure~\ref{f:3b:memcad:sum} in a form
+This representation is shown in Figure~\ref{f:2b:memcad:sum} in a form
 where the first node is kept materialized.
 It both asserts that edges of that node as well as edges from other nodes
 point to the address of a valid node, namely an element of \( \{ \naddr{0}
@@ -85,16 +30,16 @@ point to the address of a valid node, namely an element of \( \{ \naddr{0}
 \begin{figure}[t]
   \newcommand{\picscale}{0.9}
   \begin{center}
-    \subfigure[A concrete state]{ \label{f:3a:memcad:conc}
+    \subfigure[A concrete state]{ \label{f:2a:memcad:conc}
       \tikzpics{\picscale}{memcad-conc}
     }
     \quad
-    \subfigure[Summarization principle]{ \label{f:3b:memcad:sum}
+    \subfigure[Summarization principle]{ \label{f:2b:memcad:sum}
       \tikzpics{\picscale}{memcad-abs}
     }
   \end{center}
   \caption{Summarization of an adjacency list-based graph representation}
-  \label{f:3:memcad}
+  \label{f:2:memcad}
 \end{figure}
 The analysis of~\cite{memcad:15:sas} introduces a summary predicate
 \( \textbf{graph}( \naddr{0}, \mcN ) \) where \( \naddr{0} \) is the
@@ -137,6 +82,64 @@ representation for an appropriately chosen family of set predicates
 as well as facilities to assume or discharge set constraints, to
 drop set variables, and to generalize set abstractions.
 
+\paragraph{Inferrence of properties of open objects.}
+We now discuss a second example of static analysis that needs to perform
+set reasoning.
+Dynamic programming languages such as JavaScript feature {\em open objects}
+that support dynamic addition and deletion of attributes and iteration over
+them.
+The analysis presented in~\cite{hoo:14:sas} computes relations among
+objects, so as to verify programs such as a copy of the attributes of an
+object into another object.
+To achieve this, it needs to infer relations between the sets of attributes
+of distinct objects.
+Objects have an unbounded number of attributes, thus the analysis requires
+some abstraction over the attributes and their contents.
+\begin{figure}[t]
+  \newcommand{\picscale}{1}
+  \begin{center}
+    \subfigure[A concrete state]{ \label{f:3a:hoo:conc}
+      \tikzpics{\picscale}{hoo-conc}
+    }
+    \quad
+    \subfigure[Corresponding abstract state]{ \label{f:3b:hoo:abs}
+      \tikzpics{\picscale}{hoo-abs}
+    }
+  \end{center}
+  \caption{Open objects and their abstraction}
+  \label{f:3:hoo}
+\end{figure}
+Figure~\ref{f:3a:hoo:conc} represents a very simplified state, after
+the copy of the contents of objects \( \vary \) into object \( \varx \).
+This picture does not show field contents which are ignored here. % end !!!
+Instead, we focus on the set of attributes each object comprises since
+taking contents into account would not change the demonstration much.
+To abstract precisely the relations between the attributes of both objects
+(\ie, in this case, all attributes of \( \vary \) are also attributes of
+\( \varx \)), we need to describe the fields of each object as the union
+of a series of sets of attributes, and to carry out relations over these
+sets.
+Figure~\ref{f:3b:hoo:abs} depicts such an abstract state, where \( X, Y \)
+stand for the set of all attributes of objects \( \varx, \vary \).
+The set of fields of \( \varx \) is partitioned into two subsets \( X_0,
+X_1 \), and \( X_0 \) is exactly equal to the set of all the attributes
+of \( \vary \).
+Moreover, to infer invariants such as the abstract state shown in
+Figure~\ref{f:3b:hoo:abs}, the analysis needs to perform very similar
+steps as the previous analysis, in order to assume and prove set
+constraints, drop set variables, and generalize set abstractions.
+% to compute both the
+% object partitions and the associated set relations, in the same time
+% as those depend on each other.
+% When dealing with updates, the analysis {\em expands} the partitions and the
+% corresponding set relations.
+% Conversely, the fixpoint computation causes the folding of partitions,
+% which requires the computation of {\em compact disjunctions} of set
+% properties.
+% Last, the verification of a post-condition requires the {\em prooving}
+% of set properties under a set of assumptions (for instance, that \( Y
+% \subseteq X \), under the abstract state of Figure~\ref{f:3b:hoo:abs}).
+
 \paragraph{Need for set reasoning.}
 Both analyses consist of a composite abstract domain, that comprises a
 {\em structural abstract domain} describing the shape of structures, and
@@ -147,3 +150,4 @@ similar.
 % that need to be performed in the set abstract domain are
 % also similar, and mainly include the meet with additional constraints,
 % the generalization of constraints, and the entailment checking.
+

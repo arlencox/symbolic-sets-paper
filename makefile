@@ -8,8 +8,7 @@ MACROS= llncs.cls \
 	macros.tex \
 	symbolic-sets.bib
 # Pictures (order of appearance in the paper)
-TIKZ=	tkz-hoo-conc.tex \
-	tkz-hoo-abs.tex \
+TIKZ=	tkz-hoo-inv.tex \
 	tkz-memcad-conc.tex \
 	tkz-memcad-abs.tex
 # Chapters (in order) and main file
