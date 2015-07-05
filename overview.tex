@@ -14,52 +14,46 @@ behaviors on these predicates, and their implementation.
 Dynamic programming languages such as JavaScript feature {\em open objects}
 that support dynamic addition and deletion of attributes and iteration over
 them.
-The analysis presented in~\cite{hoo:14:sas} computes relations
-among objects, so as to verify programs as the piece of code of
-Figure~\ref{f:1:intro}.
-To achieve this, it infers relations between the sets of attributes
+The analysis presented in~\cite{hoo:14:sas} verifies open-object-/map-manipulating programs such as the one in Figure~\ref{f:1:intro}, by
+inferring relations between the sets of attributes
 of distinct objects.
-Objects have an unbounded number of attributes, thus the analysis requires
-some abstraction over the attributes and their contents.
+Since objects may have an unbounded number of attributes, the analysis must 
+abstract the attributes and their contents.
 \newcommand{\varsrc}{\cvar{src}}
 \newcommand{\vardst}{\cvar{dst}}
 \begin{figure}[t]
   \newcommand{\picscale}{0.82}
-  \begin{center}
+  \centering
     \tikzpics{\picscale}{hoo-inv}
-  \end{center}
   \caption{Open objects and their abstraction}
   \label{f:2:hoo}
 \end{figure}
-Figure~\ref{f:2:hoo} represents a very simplified state, at the loop
-head and after two iteration (thus two fields were copied).
+Figure~\ref{f:2:hoo} represents a simplified state at the indicated point in Figure~\ref{f:1:intro}a,
+after two iteration (thus two fields were copied).
 We focus on the set of attributes of each object, and ignore their
 contents (which could be described using similar techniques).
-To abstract precisely the relations between the attributes of both objects
-(\ie, in this case, copied attributes are common to both objects), we need
-to describe the fields of each object as the union of a series of sets of
-attributes, and to express relations among these sets.
-The first purpose of the set abstract domain is to represent such set
+To precisely abstract the relations between the attributes of both objects
+(\eg copied attributes are common to both objects), we partition the attributes into a series of attribute sets,
+ and express relations among these sets.
+The purpose of the set abstract domain is to represent such set
 relations.
 The right hand side of Figure~\ref{f:2:hoo} depicts such an abstract
 state, where \( X_n, X_r, X_v \) stand for sets of attributes, which are
 made explicit, in the case of the left hand side concrete state.
 
 Moreover, to infer these invariants, the analysis needs to reason
-both about object structures and about attributes sets:
-\begin{asparaitem}
-\item Initially, no set relation should be assumed, and the fields of
-  each object should be associated to a set of attributes;
-\item When the analysis enters the body of the loop, it needs to
+about both object structures and attributes sets:
+Initially, no set relation should be assumed, and the fields of
+  each object should be associated to a set of attributes.
+When the analysis enters the body of the loop, it needs to
   {\em single out} attribute \( \mathtt{x} \), thus, to replace set
   \( X_v \) by \( X_v \suplus \{ \mathtt{x} \} \) (which produces the
-  equalities of Figure~\ref{f:2:hoo});
-\item When it exits the loop, the analysis should {\em generalize}
+  equalities of Figure~\ref{f:2:hoo}).
+When it exits the loop, the analysis should {\em generalize}
   both the object and set constraints abstractions, which requires
-  to {\em eliminate} singleton \( \{ \mathtt{x} \} \) from the
-  equations (it is visible only in the loop body) and to synthesize
+   {\em eliminating} the singleton \( \{ \mathtt{x} \} \) from the
+  equations (it is visible only in the loop body) and synthesizing
   a new, more general collection of constraints.
-\end{asparaitem}
 To allow these steps, the set abstraction should provide basic operations
 over set predicates, including (1) the addition of a set constraint, (2)
 the proving of a set constraint, (3) the removal of a set variable and
@@ -68,18 +62,18 @@ the proving of a set constraint, (3) the removal of a set variable and
 \paragraph{Shape analysis in presence of unstructured sharing.}
 The shape analysis for data-structures with unbounded sharing presented
 in~\cite{memcad:15:sas} relies on separation logic~\cite{r:lics:02} to
-describe memory states, and on inductive definitions to summarize
+describe memory states and on inductive definitions to summarize
 unbounded structures such as lists.
 Unstructured sharing is very challenging as it cannot be described using
 conventional inductive definitions.
-Figure~\ref{f:3:memcad} displays the representation of a three nodes
-graph using an adjacency list data-structure in the left.
+Figure~\ref{f:3:memcad}a displays the representation of a three nodes
+graph using an adjacency list data-structure.
 To summarize such a structure using inductive predicates in separation
-logic, \cite{memcad:15:sas} proposes to augment the list inductive
+logic, \cite{memcad:15:sas} augments the list inductive
 predicates with set information, which express where edges may point to.
-This representation is shown in the right of Figure~\ref{f:3:memcad} in
+Figure~\ref{f:3:memcad}b shows this representation in
 a form where the first node is kept materialized.
-It both asserts that edges of that node as well as edges from other nodes
+It asserts that the edges of that node and other nodes
 point to the address of a valid node, namely an element of \( \{ \naddr{0}
 \} \suplus \mcE \).
 \begin{figure}[t]
@@ -93,7 +87,7 @@ The analysis of~\cite{memcad:15:sas} introduces a summary predicate
 address of the first node and \( \mcN \) the set of all node addresses.
 This predicate is defined by induction over the ``backbone'' of the
 structure, and fully takes into account the property that all
-\( \fldnext \) edges point to a valid node address in \( \naddr{0} \).
+\( \fldnext \) edges point to a valid node address in \( \mcN \).
 Henceforth, abstract states comprise both a {\em memory} part (which
 consists of a formlula in separation logic with inductive predicates)
 and a {\em set abstraction}.
