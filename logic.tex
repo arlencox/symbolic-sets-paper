@@ -92,14 +92,13 @@ definition in Figure~\ref{f:4:symsets} for clarity.
 A model of a set expression $E$ is a concrete state $\state$ and a set
 of concrete values $c$.
 A model of a logical expression $L$ is a concrete state $\state$.
-The concretization is given in terms of the models relationship.
+The concretization is $\gamma(L) = \{\ \sigma \ |\  \sigma \models L\ \}$. %given in terms of the models relationship.
 \begin{figure}[t]
   \begin{align*}
     & \state, c \models \emptyset \textrm{ iff } c = \emptyset
     \qquad
     \state, c \models X \textrm{ iff } c = \state(X)
-    \\
-    & \state, c \models \comp{E}
+    \qquad \state, c \models \comp{E}
     \textrm{ iff }
     \state, c' \models{E} \textrm{ and } \forall v \in \values.
     \; v \in c \leftrightarrow v \not\in c'
@@ -107,8 +106,9 @@ The concretization is given in terms of the models relationship.
     & \state, c \models E_1 \cup E_2
     \textrm{ iff }
     \state, c_1 \models E_1 \textrm{ and } \state, c_2 \models E_2
-    \\
-    & \qquad \qquad \qquad \qquad \qquad  \textrm{ and }
+    %\\
+    %& \qquad \qquad \qquad \qquad \qquad
+    \textrm{ and }
     \forall v \in \values. \; v \in c \leftrightarrow v \in c_1 \vee
     v \in c_2
     \\
@@ -125,10 +125,10 @@ The concretization is given in terms of the models relationship.
     & \state \models \card{E} = 1
     \textrm{ iff }
     \state, c \models E \textrm{ and } \exists v \in \values. \; c = \{v\}
-    \\
-    & \gamma(L) = \{\ \sigma \ |\  \sigma \models L\ \}
+%    \\
+%    & \gamma(L) = \{\ \sigma \ |\  \sigma \models L\ \}
   \end{align*}
-  \caption{Symbolic sets}
+  \caption{Symbolic set constraint language}
   \label{f:4:symsets}
 \end{figure}
 We shall also use the following derived logical forms for simplicity.

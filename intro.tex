@@ -1,11 +1,11 @@
 \section{Introduction}
 \label{s:1:intro}
-It is well understood that the verification of program properties that
+The verification of program properties that
 involve data structures is a challenging problem~\cite{jahob:thesis:07,compass:popl:11,fixbag:cav:11,celia:vmcai:12,ab:ecoop:13,hoo:14:sas,memcad:15:sas}.
-There are a multitude of reasons for this, but one key reason is that
+One key reason for this is that
 if a data structure is unbounded, there is a potentially unbounded number of constraints on its elements.  Since these constraints often affect important properties such as memory safety~\cite{memcad:15:sas}, functional correctness~\cite{fixbag:cav:11}, or basic program behavior~\cite{hoo:14:sas}, it is vital to develop techniques for efficiently reasoning about relationships between unbounded numbers of elements.
 
-Here we use set constraints to reason about unbounded collections of elements.  Set constraints can be used to dynamically partition data structures, correlate collections of elements with one another, or determine analysis case splits.  They are useful for representing data and pointers relationships in structures such as maps, graphs, lists, sets, and arrays.  They can be combined with other techniques such as separation logic~\cite{hoo:14:sas,memcad:15:sas} and numerical analyses~\cite{quicr:cav:14} to enhance those analyses.
+This paper focuses on the use of set constraints to reason about unbounded collections of elements.  Set constraints can be used to dynamically partition data structures, correlate collections of elements with one another, or determine analysis case splits.  They are useful for representing data and pointers relationships in structures such as maps, graphs, lists, sets, and arrays.  They can be combined with other techniques such as separation logic~\cite{hoo:14:sas,memcad:15:sas} and numerical analyses~\cite{quicr:cav:14} to enhance those analyses.
 
 %% xr: need to adjust overview, there is some repetition now
 For example, consider the program in Figure~\ref{fig:intro-example}
@@ -14,8 +14,8 @@ Within the loop, there is a complex relationship between the sets of
 keys of \ttvar{src} and \ttvar{dst}.
 At the specified point, the keys of \ttvar{src} can be partitioned into
 three parts.
-The keys $X_v$ already visited by the loop, the element currently being
-visited by the loop $\{\varx\}$, and the keys $X_n$ not visited by
+The keys already visited $X_v$ by the loop, the element currently being
+visited by the loop $\{\varx\}$, and the keys not visited $X_n$ by
 the loop.
 The keys of \ttvar{dst} can be partitioned into those originally in
 \ttvar{dst} that have not been overwritten, and those $X_v$ that have
@@ -74,28 +74,24 @@ in the common cases, and unlike systems that involve complex heuristics,
 lose precision only in understandable and predictable ways.
 
 % AC: seems like this could be tightened up and combined with the next paragraph
-In this paper we aim to address the performance and precision challenges
-by defining a variety of interchangeable abstractions and abstraction
-combinators that can be selected for a particular application.
-This includes abstractions based on binary decision diagrams,
-satisfiability modulo theories, and linear set constraints.
-Additionally, it includes performance and precision enhancing combinators for tracking
-singleton sets, handling equality, and doing dynamic variable packing.
-These abstractions and combinators exist within a general framework so
-that additional abstractions and combinators can be easily added.
-This framework is available within the QUICr library, which is now
-used by two research analyzers.
-
-In this paper we make the following contributions.
+In this paper we aim to design scalable, precise, and predictable abstractions for symbolic sets by combining new abstract domains with performance/precision-enhancing functors that lift existing set abstractions to new set abstractions.  Specifically, we make the following contributions:
+%This includes abstractions based on binary decision diagrams,
+%satisfiability modulo theories, and linear set constraints.
+%Additionally, it includes performance and precision enhancing combinators for tracking
+%singleton sets, handling equality, and doing dynamic variable packing.
+%These abstractions and combinators exist within a general framework so
+%that additional abstractions and combinators can be easily added.
+%This framework is available within the QUICr library, which is now
+%used by two research analyzers.
+%
+%In this paper we make the following contributions.
 \begin{compactitem}
-\item We define a common interface for symbolic set abstractions that is designed to meet the needs of static analyzers.
-  %% xr: not very specific; I suggest to add "adapted for static analysis"
-  %%     or "that describes static analyzers set reasoning needs"
-  This interface is used as the framework for all set
-  abstractions (Section~\ref{sec:logic-and-set-abstraction}).
-\item Using specialized data structures to represent set constraints uniformly and efficiently, we construct scalable abstractions and combinators for set relationships.  These abstractions are easily swappable, customizable, and extensible depending on the application domain.  We designed these abstractions to target real-world problems in data structure verification (Section~\ref{sec:constructed}).
-\item We show that off-the-shelf solvers can be adapted to the set abstraction interface.  We demonstrate this with an abstraction based on satisfiability modulo theories (Section~\ref{sec:solvers}).
-\item We compare and contrast the constructed abstractions, solver
-  abstractions, with and without various abstraction combinators on a
-  variety of real-world benchmarks.  We find that due to the renaming and projection abstract domain operations that constructed abstractions perform better than highly-tuned off-the-shelf solvers while offering comparable precision (Section~\ref{sec:evaluation}).
+\item We define a common interface for symbolic set abstractions that is designed to meet the needs of static analyzers (Section~\ref{sec:logic-and-set-abstraction}).
+%
+\item Using specialized data structures, we construct a battery of symbolic set abstract domains and performance/precision-enhancing functors designed to target real-world data structure verification problems (Section~\ref{sec:constructed}).
+%
+\item We adapt an off-the-shelf satisfiability-modulo-theories solver to the set abstraction interface (Section~\ref{sec:solvers}).
+%
+\item We compare abstractions for symbolic sets, finding that, while specialized abstractions are preferable, binary decision diagrams lifted with dynamic packing is a good compromise in scalability, performance, and predictability (Section~\ref{sec:evaluation}).
+%
 \end{compactitem}
