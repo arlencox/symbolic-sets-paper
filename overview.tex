@@ -72,27 +72,19 @@ describe memory states, and on inductive definitions to summarize
 unbounded structures such as lists.
 Unstructured sharing is very challenging as it cannot be described using
 conventional inductive definitions.
-Figure~\ref{f:3a:memcad:conc} displays the representation of a three nodes
-graph using an adjacency list data-structure.
+Figure~\ref{f:3:memcad} displays the representation of a three nodes
+graph using an adjacency list data-structure in the left.
 To summarize such a structure using inductive predicates in separation
 logic, \cite{memcad:15:sas} proposes to augment the list inductive
 predicates with set information, which express where edges may point to.
-This representation is shown in Figure~\ref{f:3b:memcad:sum} in a form
-where the first node is kept materialized.
+This representation is shown in the right of Figure~\ref{f:3:memcad} in
+a form where the first node is kept materialized.
 It both asserts that edges of that node as well as edges from other nodes
 point to the address of a valid node, namely an element of \( \{ \naddr{0}
 \} \suplus \mcE \).
 \begin{figure}[t]
   \newcommand{\picscale}{0.9}
-  \begin{center}
-    \subfigure[A concrete state]{ \label{f:3a:memcad:conc}
-      \tikzpics{\picscale}{memcad-conc}
-    }
-    \quad
-    \subfigure[Summarization principle]{ \label{f:3b:memcad:sum}
-      \tikzpics{\picscale}{memcad-abs}
-    }
-  \end{center}
+  \tikzpics{\picscale}{memcad-inv}
   \caption{Summarization of an adjacency list-based graph representation}
   \label{f:3:memcad}
 \end{figure}
@@ -108,8 +100,8 @@ and a {\em set abstraction}.
 
 To compute such summaries, the analysis needs to perform similar
 operations as the analysis for open objects, in order to add set
-constraints to the set abstract state, to prove set constraints,
-to remove set variables and to generalize abstract states.
+constraints to the set abstract state, prove set constraints,
+remove set variables and generalize abstract states.
 
 % \paragraph{Need for set reasoning.}
 % Both analyses consist of a composite abstract domain, that comprises a

@@ -9,8 +9,7 @@ MACROS= llncs.cls \
 	symbolic-sets.bib
 # Pictures (order of appearance in the paper)
 TIKZ=	tkz-hoo-inv.tex \
-	tkz-memcad-conc.tex \
-	tkz-memcad-abs.tex
+	tkz-memcad-inv.tex
 # Chapters (in order) and main file
 BODY=	abstract.tex \
 	intro.tex \

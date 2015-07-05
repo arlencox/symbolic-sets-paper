@@ -1,0 +1,125 @@
+\begin{tikzpicture}[]
+  \newcommand{\xunit}{0.75}
+  \begin{scope}[shift={(0,0)}]
+    \tkzputtext{4.5*\xunit,-0.4}{A concrete memory state}
+    % nodes
+    \foreach \xx/\num/\coldr/\colfill in {
+      2/0/mblue/mulightblue,
+      4/1/mpurple/mulightpurple,
+      6/2/mpurple/mulightpurple%
+    }{
+      \newcommand{\xmin}{\xx * \xunit}
+      \newcommand{\xmid}{\xx * \xunit + \xunit * 0.5}
+      \newcommand{\xmax}{\xx * \xunit + \xunit}
+      \fill [fill=\colfill] (\xmin, 2.4) rectangle (\xmax, 3.6);
+      \draw [color=\coldr] (\xmin, 2.4) rectangle (\xmax, 3.6);
+      \draw [color=\coldr] (\xmin, 2.8) -- (\xmax, 2.8);
+      \draw [color=\coldr] (\xmin, 3.2) -- (\xmax, 3.2);
+      \tkzputform{ \xmid, 3.0 }{ \num }
+      \tkzputlftform{ \xmin + 0.05, 3.6 }{ \naddr{\num} }
+    }
+    \tkzputform{ 6.5 * \xunit, 3.4 }{ \nullptr  }
+    \tkzputform{ 4.5 * \xunit, 2.6 }{ \nullptr  }
+    % edges
+    \foreach \xx/\y/\coldr/\colfill in {
+      2/0/mgreen/mulightgreen,
+      2/1/mgreen/mulightgreen,
+      6/0/mred/mulightred,
+      6/1/mred/mulightred%
+    }{
+      \newcommand{\xmin}{\xx * \xunit}
+      \newcommand{\xmax}{\xx * \xunit + \xunit}
+      \fill [fill=\colfill] (\xmin, \y * 1.2) rectangle (\xmax, \y * 1.2 + 0.8);
+      \draw [color=\coldr] (\xmin, \y * 1.2) rectangle (\xmax, \y * 1.2 + 0.8);
+      \draw [color=\coldr] (\xmin, \y * 1.2 + 0.4) -- (\xmax, \y * 1.2 + 0.4);
+    }
+    % pointers (list of nodes)
+    \foreach \xx in {2, 4}{
+      \newcommand{\xmin}{\xx * \xunit + 0.5 * \xunit}
+      \newcommand{\xmax}{\xx * \xunit + 2 * \xunit}
+      \tkptrdot{ \xmin, 3.4 }
+      \draw [-{Stealth},color=black] (\xmin, 3.4) -- (\xmax, 3.4);
+    }
+    % pointers (lists of edges)
+    \foreach \xx/\y in {2.5/0, 2.5/1, 6.5/0, 6.5/1}{
+      \newcommand{\xmid}{\xx * \xunit}
+      \newcommand{\ysrc}{\y * 1.2 + 1.4}
+      \newcommand{\ydst}{\y * 1.2 + 0.8}
+      \tkptrdot{ \xmid, \ysrc }
+      \draw [-{Stealth}] (\xmid, \ysrc) -- (\xmid, \ydst);
+    }
+    % edges
+    \foreach \xxa/\ya/\xxb/\yb/\xxc/\yc/\xxd/\yd in {
+      2.5/1.8/3.0/1.8/3.5/2.5/4.0/2.5, % 0 => 1
+      2.5/0.6/5.9/0.6/4.9/2.5/6.0/2.5, % 0 => 2
+      6.5/1.8/4.5/1.8/4.5/1.8/4.5/2.4, % 2 => 1
+      6.5/0.6/4.5/0.6/4.5/2.5/3.0/2.5% % 2 => 0
+    }{
+      \newcommand{\xa}{\xxa * \xunit}
+      \newcommand{\xb}{\xxb * \xunit}
+      \newcommand{\xc}{\xxc * \xunit}
+      \newcommand{\xd}{\xxd * \xunit}
+      \tkptrdot{ \xa, \ya }
+      \draw[-{Stealth}](\xa,\ya) .. controls(\xb,\yb)and(\xc,\yc) .. (\xd,\yd);
+    }
+  \end{scope}
+  \begin{scope}[shift={(8*\xunit,0)}]
+    \tkzputtext{6.0*\xunit,-0.4}{Abstract memory state}
+    % nodes
+    \foreach \xx/\num in {2/0}{
+      \newcommand{\xmin}{\xx * \xunit}
+      \newcommand{\xmid}{\xx * \xunit + \xunit * 0.5}
+      \newcommand{\xmax}{\xx * \xunit + \xunit}
+      \fill [fill=mulightblue] (\xmin, 2.4) rectangle (\xmax, 3.6);
+      \draw [color=mblue] (\xmin, 2.4) rectangle (\xmax, 3.6);
+      \draw [color=mblue] (\xmin, 2.8) -- (\xmax, 2.8);
+      \draw [color=mblue] (\xmin, 3.2) -- (\xmax, 3.2);
+      \tkzputform{ \xmid, 3.0 }{ \num }
+      \tkzputlftform{ \xmin + 0.05, 3.6 }{ \naddr{\num} }
+    }
+    \fill [fill=mulightpurple] (4 * \xunit, 2.4) rectangle (10 * \xunit, 3.6);
+    \fill [fill=mulightpurple,pattern=checkerboard,
+    pattern color=mulightred] (4 * \xunit, 2.4) rectangle (10 * \xunit, 3.6);
+    \fill [fill=mulightpurple] (4 * \xunit, 1.7) rectangle (10 * \xunit, 2.4);
+    \fill [fill=mulightred] (4 * \xunit, 1.0) rectangle (10 * \xunit, 1.8);
+    \draw [color=mpurple] (4 * \xunit, 1.0) rectangle (10 * \xunit, 3.6);
+    \draw [fill=mulightgreen] (1.2 * \xunit, 0) rectangle (3.8 * \xunit, 2.0);
+    \draw [color=mgreen] (1.2 * \xunit, 0) rectangle (3.8 * \xunit, 2.0);
+    \tkzputtext{ 7.2 * \xunit, 3.0 }{
+      \begin{tabular}{c}
+        summarized tail of \\
+        the adjacency list \\
+        (nodes and edges) \\
+      \end{tabular}}
+    \tkzputtext{ 7.2 * \xunit, 2.1 }{
+      node addresses: \( \mcE \)}
+    \tkzputtext{ 7.2 * \xunit, 1.4 }{
+      \begin{tabular}{c}
+        outoing edges pointing \\
+        into \( \{ \naddr{0} \} \suplus \mcE \) \\
+      \end{tabular}}
+    \tkzputtext{ 2.5 * \xunit, 1.0 }{
+      \begin{tabular}{c}
+        summarized \\
+        list of edges \\
+        of node \( \naddr{0} \) \\
+        pointing into \\
+        \( \{ \naddr{0} \} \suplus \mcE \) \\
+      \end{tabular}}
+    % pointers (list of nodes)
+    \foreach \xx in {2}{
+      \newcommand{\xmin}{\xx * \xunit + 0.5 * \xunit}
+      \newcommand{\xmax}{\xx * \xunit + 2 * \xunit}
+      \tkptrdot{ \xmin, 3.4 }
+      \draw [-{Stealth}] (\xmin, 3.4) -- (\xmax, 3.4);
+    }
+    % pointers (lists of edges)
+    \foreach \xx/\y in {2.5/1}{
+      \newcommand{\xmid}{\xx * \xunit}
+      \newcommand{\ysrc}{\y * 1.2 + 1.4}
+      \newcommand{\ydst}{\y * 1.2 + 0.8}
+      \tkptrdot{ \xmid, \ysrc }
+      \draw [-{Stealth}] (\xmid, \ysrc) -- (\xmid, \ydst);
+    }
+  \end{scope}
+\end{tikzpicture}
