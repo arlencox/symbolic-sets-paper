@@ -14,21 +14,21 @@ efficient one.
 \newcommand{\gammalin}{\gamma_{\zcl}}
 \paragraph{Abstract elements and their concretization.}
 Our first set abstract domain relies on {\em linear} set equality
-constraints, of the form \( \setvx = \{ y_0, \ldots, y_k \} \suplus
-\setvz_0 \suplus \ldots \suplus \setvz_l \).
+constraints, of the form \( \aform{\setvx = \{ y_0, \ldots, y_k \} \suplus
+  \setvz_0 \suplus \ldots \suplus \setvz_l} \).
 The advantage of this representation is to provide a rather straightforward
 normalization of the representation of constraints.
 Note they also include emptiness constraints.
 Our implementation of abstract domain \( \adomlin \) describes three kinds
 of constraints:
 \begin{compactitem}
-\item {\em linear} constraints of the form \( \setvx = \setvy_0 \suplus
-  \ldots \suplus \setvy_k \suplus \setvz_0 \suplus \ldots \suplus
-  \setvz_l \), where \( \setvy_0, \ldots, \setvy_k \) are singletons
-  (in our implementation, each variable may appear at most {\em once}
-  as the left hand side of such a constraint);
-\item inclusion constraints of the form \( \setvy \subseteq \setvx \);
-\item equality constraints of the form \( \setvy = \setvx \).
+\item {\em linear} constraints of the form \( \aform{\setvx = \setvy_0
+    \suplus \ldots \suplus \setvy_k \suplus \setvz_0 \suplus \ldots
+    \suplus \setvz_l} \), where \( \setvy_0, \ldots, \setvy_k \) are
+  singletons (in our implementation, each variable may appear at most
+  {\em once} as the left hand side of such a constraint);
+\item inclusion constraints of the form \( \aform{\setvy \subseteq \setvx} \);
+\item equality constraints of the form \( \aform{\setvy = \setvx} \).
 \end{compactitem}
 Thus, an element of \( \adomlin \) is either \( \bot \) or a conjunction of
 such constraints.
@@ -44,10 +44,11 @@ abstract state \( \astate \) entail that \( \setvx \subseteq \setvy
 \paragraph{Abstract operators.}
 The core algorithm of \( \adomlin \) normalizes an abstract values by
 expanding nested linear constraints:
-for instance, \( \setvx_0 = \setvx_1 \suplus \setvx_2 \wedge \setvx_1
-= \setvx_3 \suplus \setvx_4 \) is rewritten into  \( \setvx_0 = \setvx_2
-\suplus \setvx_3 \suplus \setvx_4 \wedge \setvx_1 = \setvx_3 \suplus
-\setvx_4 \).
+for instance, \( \aform{\setvx_0 = \setvx_1 \suplus \setvx_2 \wedge
+  \setvx_1 = \setvx_3 \suplus \setvx_4} \) is rewritten into
+\( \aform{\setvx_0 = \setvx_2 \suplus \setvx_3 \suplus \setvx_4 \wedge
+  \setvx_1 = \setvx_3 \suplus \setvx_4} \) at the machine representation
+level.
 This process terminates as constraints represented in \( \adomlin \)
 do not contain cycles.
 It is performed incrementally by all abstract operations.
@@ -58,13 +59,13 @@ Operation \( \adomforget \) simply drops all constraints that involve
 a given set variable.
 Finally, \( \adomjoin \) and \( \adomwiden \) need to {\em generalize}
 constraints:
-\begin{example}[]
+\begin{example}
   Let us assume that \( \astate_0 \) (\resp, \( \astate_1 \)) stands for
-  the set of constraints \( \setvx_0 = \setvx_1 \suplus \setvx_2
-  \wedge \setvx_3 = \emptyset \) (\resp, \( \setvx_0 = \setvx_1 \suplus
-  \setvx_2 \suplus \setvx_3 \)).
+  the set of constraints \( \aform{\setvx_0 = \setvx_1 \suplus \setvx_2
+    \wedge \setvx_3 = \emptyset} \) (\resp, \( \aform{\setvx_0 = \setvx_1
+    \suplus \setvx_2 \suplus \setvx_3} \)).
   Then \( \adomjoin( \astate_0, \astate_1 ) \) returns the constraint
-  \( \setvx_0 = \setvx_1 \suplus \setvx_2 \suplus \setvx_3 \).
+  \( \aform{\setvx_0 = \setvx_1 \suplus \setvx_2 \suplus \setvx_3} \).
 \end{example}
 \memcad~\cite{memcad:15:sas} relies on \( \adomlin \) to represent set
 constraints since it mainly needs to express constraints over set
