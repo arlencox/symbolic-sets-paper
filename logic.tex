@@ -9,14 +9,13 @@ Section~\ref{s:2:over}.
 In this paper, we use symbols $\setvw$, $\setvx$, $\setvy$, and $\setvz$
 to represent set variables in $\setvars$.
 We are interested in purely symbolic set relations, and do not make any
-assumption on the type of the elements of the sets those variables stand
-for.
+assumption on the type of the set elements.
 We let \( \values \) denote the set of all these elements.
 A concrete state is a function \( \state: \setvars \rightarrow
 \partsof{\values} \).
 We write \( \states \) for the set of such elements.
 
-As usual in program analysis, {\em set abstract domain} is defined by a
+As usual in program analysis, a {\em set abstract domain} is defined by a
 set of {\em abstract elements} \( \adom \) which describe the family of
 logical properties it can express and a concretization function
 \( \gammadom: \adom \rightarrow \partsof{\states} \) that maps each
@@ -39,13 +38,13 @@ element of \( \adom \) into the set of concrete states that satisfy it.
 
 \subsection{Operations over Set Abstractions}
 \label{s:3:2:sign}
-We now formalize the list of the main operations needed so that we can use
+We now formalize the main operations needed so that we can use
 a set abstract \( \adom \) domain for either of the static analyses shown
 in Section~\ref{s:2:over}.
 
 \paragraph{Remarkable lattice elements.}
 Static analyses typically start with an unconstrained state.
-This is materialized by a \( \adomtop \in \adom \) element with full
+This is indicated by a \( \adomtop \in \adom \) element with full
 concretization, \ie, \( \gammadom( \adomtop ) = \states \).
 Similarly abstract element \( \adombot \in \adom \) should describe
 the unsatisfiable abstract constraint (\ie, \( \gammadom( \adombot ) =
@@ -92,7 +91,7 @@ definition in Figure~\ref{f:4:symsets} for clarity.
 A model of a set expression $E$ is a concrete state $\state$ and a set
 of concrete values $c$.
 A model of a logical expression $L$ is a concrete state $\state$.
-The concretization is $\gamma(L) = \{\ \sigma \ |\  \sigma \models L\ \}$. %given in terms of the models relationship.
+The concretization is $\gamma(L) = \{\ \sigma \ |\  \sigma \models L\ \}$ and we use $\logic{L}$ for abstract states with the same concretization. %given in terms of the models relationship.
 \begin{figure}[t]
   \begin{align*}
     & \state, c \models \emptyset \textrm{ iff } c = \emptyset
