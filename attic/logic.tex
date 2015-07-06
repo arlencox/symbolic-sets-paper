@@ -1,82 +1,187 @@
+\section{Logic and Set Abstraction}
+\label{sec:logic-and-set-abstraction}
+In this section, we define the signature of a set abstract domain that
+implements all the operations required by the analyses shown in
+Section~\ref{s:2:over}.
 
-In this section we present the logical underpinnings of our class of set abstractions.  We are interested in a subclass of sets where sets are purely symbolic.  A \emph{purely symbolic set abstraction} is an abstraction for sets that places no requirements on the type or capabilities of the values stored within the set.  It does this by not allowing the expression of values within the logic.
+\paragraph{Symbolic sets}
+We first set up a language of set predicates, that will be used as a
+basis for several abstract domain components.
 
-In this paper, we use symbols $W$, $X$, $Y$, and $Z$ to represent set variables in $\setvars$.  We use $\state$ to represent a concrete state in $\states$ and we use $\abstract$ to represent an abstract state in $\abstracts$.
+\subsection{Set Abstraction}
+\label{s:3:1:abs}
+In this paper, we use symbols $\setvw$, $\setvx$, $\setvy$, and $\setvz$
+to represent set variables in $\setvars$.
+We are interested in purely symbolic set relations, and do not make any
+assumption on the type of the set elements.
+We let \( \values \) denote the set of all these elements.
+A concrete state is a function \( \state: \setvars \rightarrow
+\partsof{\values} \).
+We write \( \states \) for the set of such elements.
+
+As usual in program analysis, a {\em set abstract domain} is defined by a
+set of {\em abstract elements} \( \adom \) which describe the family of
+logical properties it can express and a concretization function
+\( \gammadom: \adom \rightarrow \partsof{\states} \) that maps each
+element of \( \adom \) into the set of concrete states that satisfy it.
+\begin{example}[(Non-)Emptiness set domain]
+  \label{ex:1:mt}
+  A very basic example of such domain is the {\em (non-)emptiness} domain
+  that comprises the following elements:
+  \begin{compactitem}
+  \item \( \bot \) which denotes the unsatisfiable abstract constraint
+    (\ie, \( \gammadom( \bot ) = \emptyset ) \));
+  \item the functions from \( \setvars \) into \( \{ [=\emptyset],
+    [\not=\emptyset], \top \} \), and where a function \( \astate \) of
+    that form is concretized into the set of states \( \state \) such that
+    \( \astate( \setvx ) = [=\emptyset] \) (\resp, \( \astate( \setvx ) =
+    [\not=\emptyset] \)) implies that \( \state( \setvx ) = \emptyset \)
+    (\resp, \( \state( \setvx ) \not= \emptyset \))
+  \end{compactitem}
+\end{example}
+
+\subsection{Operations over Set Abstractions}
+\label{s:3:2:sign}
+We now formalize the main operations needed so that we can use
+a set abstract \( \adom \) domain for either of the static analyses shown
+in Section~\ref{s:2:over}.
+
+\paragraph{Remarkable lattice elements.}
+Static analyses typically start with an unconstrained state.
+This is indicated by a \( \adomtop \in \adom \) element with full
+concretization, \ie, \( \gammadom( \adomtop ) = \states \).
+Similarly abstract element \( \adombot \in \adom \) should describe
+the unsatisfiable abstract constraint (\ie, \( \gammadom( \adombot ) =
+\emptyset \)).
+In Example~\ref{ex:1:mt}, \( \adombot \) is \( \bot \) and \( \adomtop \)
+is \( \lambda (x \in \setvars) \cdot \top \).
+Moreover, a static analysis often has to determine if an abstract state
+describes unsatisfiable constraints.
+Thus, \( \adom \) should provide an operator \( \adomisbot: \adom
+\rightarrow \{ \true, \false \} \) such that \( \adomisbot( \astate )
+= \true \Longrightarrow \gammadom( \astate ) = \emptyset \).
+
+\paragraph{Forgetting a set variable.}
+When an update takes place, static analysis tools have to drop parts or
+all of the facts they know about the entities modified by the assignment.
+In the case of set abstract domain \( \adom \), this should be performed
+by an operator \( \adomforget: \adom \times \setvars \rightarrow \adom \).
+% forget soundness property
+
+\paragraph{Assuming and verifying set constraints.}
+As noted in Section~\ref{s:2:over}, an important part of the set reasoning
+required in static analysis consists in moving set constraints (\eg, derived
+from the unfolding of an inductive predicate with set constraints) into the
+set domain, and in using the constraints tracked in the set domain in order
+to discharge constraints (\eg, so as to enable the folding of an inductive
+predicate).
+We define the following language in order to express such constraints:
 \begin{definition}[Symbolic Sets]
-    Symbolic sets are defined by the following grammar:
-    
-    \begin{align*}
-        L ::= & \ L \wedge L \ | \ E \subseteq E \ | \ \card{X} = 1 \ | \ \top \ | \ \bot &
-        E ::= & \ \emptyset \ | \ X \ | \ \comp{E} \ | \ E \cup E
-    \end{align*}
+  \label{d:1:symsets}
+  {\em Symbolic sets} are defined by the grammar:
+  \begin{align*}
+    L (\in \symsets) ::=
+    & \ L \wedge L \
+    | \ E \subseteq E \
+    | \ \card{X} = 1 \
+    | \ \top \
+    | \ \bot
+    & E ::=
+    & \ \emptyset \ | \ X \ | \ \comp{E} \ | \ E \cup E
+  \end{align*}
 \end{definition}
-
-A symbolic set consists of basic set combination operations with equality, non-strict subset and simple cardinality.  While more general symbolic sets can reasoned about by extending the cardinality (as in BAPA), the goal here is to perform invariant generation, so the problem goes beyond that of deciding implication.  We must also approximate upper bound operations.  As a result, the logic is simplified in such a way that is simultaneously useful and more amenable to computing upper bounds.
-
-Symbolic sets represent concrete set states.  A concrete set state maps set variables to sets of values:
-\begin{align*}
-    \state \in \states = \setvars \rightarrow \powerset{\values}
-\end{align*}
-
-The meaning of these contraints is straightforward, but we give a formal definition for clarity.  A model of a set expression $E$ is a concrete state $\state$ and a set of concrete values $c$.  A model of a logical expression $L$ is a concrete state $\state$.  The concretization is given in terms of the models relationship.
-\begin{align*}
-  & \state, c \models \emptyset \textrm{ iff } c = \emptyset \qquad \state, c \models X \textrm{ iff } c = \state(X) \\
-  & \state, c \models \comp{E} \textrm{ iff } \state, c' \models{E} \textrm{ and } \forall v \in \values. \; v \in c \leftrightarrow v \not\in c' \\
-  & \state, c \models E_1 \cup E_2 \textrm{ iff } \state, c_1 \models E_1 \textrm{ and } \state, c_2 \models E_2\\
-  & \qquad \qquad \qquad \qquad \qquad  \textrm{ and } \forall v \in \values. \; v \in c \leftrightarrow v \in c_1 \vee v \in c_2 \\
-  & \state \models L_1 \wedge L_2 \textrm{ iff } \state \models L_1 \textrm{ and } \state \models L_2 \qquad \state \models \top \qquad \state \not\models \bot \\
-  & \state \models E_1 \subseteq E_2 \textrm{ iff } \state, c_1 \models E_1 \textrm{ and } \state, c_2 \models E_2 \textrm{ and } \forall v \in \values. \; v \in c_1 \rightarrow v \in c_2 \\
-  & \state \models \card{E} = 1 \textrm{ iff } \state, c \models E \textrm{ and } \exists v \in \values. \; c = \{v\} \\
-  & \gamma(L) = \{\ \sigma \ |\  \sigma \models L\ \}
-\end{align*}
-
-We will also use the following derived logical forms for simplicity.
-\begin{align*}
- & E_1 = E_2 \defeq E_1 \subseteq E_2 \wedge E_2 \subseteq E_1 \\
- & E_1 \cap E_2 \defeq \comp{(\comp{E_1} \cup \comp{E_2})} \\
- & E_1 \setminus E_2 \defeq E_1 \cap \comp{E_2} \\
- & E_1 \uplus E_2 \defeq E_1 \cup E_2 \textrm{ if } E_1 \cap E_2 = \emptyset
-\end{align*}
-
-\subsection{Relationship with model checking}
-
-Because set abstractions are closely related to Boolean algebras, it might be natural to wonder how set abstractions are related to hardware model checking.  There are existing fast algorithms for hardware model checking and the problem has been thoroughly studied.
-
-The key differentiator between most abstract interpretation and model checking techniques is that model checking techniques are designed to be property directed.  A \emph{property directed} approach uses a known property that is trying to be proven as an input to invariant generation.  As a result, invariants that are generated are perhaps only suitable to prove that particular property (and weaker properties).  While abstract interpretation can be property directed, often it is not.  The purpose of abstract interpretation is to discover a superset of program behaviors and use those behaviors to prove many properties of programs.  Thus the goal of a property directed technique is different to that of most abstract interpreters.
-
-Furthermore, the libraries that we describe in this paper are designed to be used in an externally defined abstract interpretation (Figure~\ref{fig:domain-usage}).  As a result, they are not designed to have full knowledge of the overall analysis.  They are instead designed to reason about set constraints describing a single abstract state.  The understanding of the analysis is relegated to the external entity that performs the abstract interpretation.  In other words, a set abstraction is to an abstract interpreter what a sat solver is to a hardware model checker.  The set abstractions are different from SAT solvers because they are designed to solve the kinds of problems that arise in abstract interpretation.
-
-\begin{figure}[tb]
-    \centering
-    \begin{tikzpicture}[
-    every on chain/.append style={join},
-    every join/.style={->}
-    ]
-    \matrix (m) [matrix of nodes, column sep=5mm, nodes={}]
-    {
-        Abstract Interpreter & Memcad & Set Abstraction \\
-        Abstract Interpreter & HOO & Set Abstraction \\
-        Abstract Interpreter &     & Set Abstraction \\
-    };
-    { [start chain]
-        \chainin (m-1-1);
-        \chainin (m-1-2);
-        \chainin (m-1-3);
-    }
-    { [start chain]
-        \chainin (m-2-1);
-        \chainin (m-2-2);
-        \chainin (m-2-3);
-    }
-    { [start chain]
-        \chainin (m-3-1);
-        \chainin (m-3-3);
-    }
-    \end{tikzpicture}
-    \caption{A set abstraction is used as part a larger analysis.  The abstract interpreter delegates some tasks to abstract domains.  Here, we consider three cases (1) Memcad is an abstract domain for C heaps that delegates some problems to a set abstraction; (2) HOO is an abstract domain for JavaScript heaps that delegates many problems to a set abstraction; and (3) The set abstraction is used directly}
-    \label{fig:domain-usage}
+The meaning of these contraints is straightforward, but we give a formal
+definition in Figure~\ref{f:4:symsets} for clarity.
+A model of a set expression $E$ is a concrete state $\state$ and a set
+of concrete values $c$.
+A model of a logical expression $L$ is a concrete state $\state$.
+The concretization is $\gamma(L) = \{\ \sigma \ |\  \sigma \models L\ \}$ and we use $\logic{L}$ for abstract states with the same concretization. %given in terms of the models relationship.
+\begin{figure}[t]
+  \begin{align*}
+    & \state, c \models \emptyset \textrm{ iff } c = \emptyset
+    \qquad
+    \state, c \models X \textrm{ iff } c = \state(X)
+    \qquad \state, c \models \comp{E}
+    \textrm{ iff }
+    \state, c' \models{E} \textrm{ and } \forall v \in \values.
+    \; v \in c \leftrightarrow v \not\in c'
+    \\
+    & \state, c \models E_1 \cup E_2
+    \textrm{ iff }
+    \state, c_1 \models E_1 \textrm{ and } \state, c_2 \models E_2
+    %\\
+    %& \qquad \qquad \qquad \qquad \qquad
+    \textrm{ and }
+    \forall v \in \values. \; v \in c \leftrightarrow v \in c_1 \vee
+    v \in c_2
+    \\
+    & \state \models L_1 \wedge L_2
+    \textrm{ iff }
+    \state \models L_1 \textrm{ and } \state \models L_2 \qquad
+    \state \models \top \qquad \state \not\models \bot
+    \\
+    & \state \models E_1 \subseteq E_2
+    \textrm{ iff }
+    \state, c_1 \models E_1 \textrm{ and } \state, c_2 \models E_2
+    \textrm{ and } \forall v \in \values. \; v \in c_1 \rightarrow v \in c_2
+    \\
+    & \state \models \card{E} = 1
+    \textrm{ iff }
+    \state, c \models E \textrm{ and } \exists v \in \values. \; c = \{v\}
+%    \\
+%    & \gamma(L) = \{\ \sigma \ |\  \sigma \models L\ \}
+  \end{align*}
+  \caption{Symbolic set constraint language}
+  \label{f:4:symsets}
 \end{figure}
+We shall also use the following derived logical forms for simplicity.
+%% xr: add membership
+%% xr: consider removing equality (too trivial)
+\[
+\begin{array}{rclcrcl}
+  E_1 \cap E_2 & \defeq & \comp{(\comp{E_1} \cup \comp{E_2})}
+  & \qquad &
+  E_1 = E_2 & \defeq & E_1 \subseteq E_2 \wedge E_2 \subseteq E_1
+  \\
+  E_1 \setminus E_2 &  \defeq & E_1 \cap \comp{E_2}
+  & \qquad &
+  E_1 \uplus E_2 & \defeq & E_1 \cup E_2 \textrm{ if } E_1 \cap E_2 = \emptyset
+  \\
+\end{array}
+\]
+Based, on this language, we require \( \adom \) to provide the following
+abstract operators:
+\begin{compactitem}
+\item \( \adomassume: \adom \times \symsets \rightarrow \adom \), which
+  conservatively represents a constraint into an abstract state, \ie,
+  ensures that, for all \( \astate, L \), \( \gammadom( \astate ) \cap
+  \gamma( L ) \subseteq \gammadom( \adomassume( \astate, L ) ) \);
+\item \( \adomprove: \adom \times \symsets \rightarrow \{ \true, \false \} \),
+  which conservatively attempts to verify that a symbolic set constraint
+  holds under some abstract states, \ie, ensures that, for all \( \astate,
+  L \), \( \gammadom( \adomassume( \astate, L ) ) = \true \) implies that
+  \( \gammadom( \astate ) \subseteq \gamma( L ) \).
+\end{compactitem}
+% add some example
 
-\paragraph{Key challenges:}  As opposed to model checkers, there are three additional challenges that a symbolic set abstraction faces. (1) Forward analysis of assignment introduces existential quantifiers.  They must be eliminated or otherwise handled by the abstraction.  The nesting of these quantifiers can be very deep. (2) The constraints are equality heavy and disjointness heavy.  Many constraints are simple equality ($X = Y$) or disjointness ($X \cap Y = \emptyset$).  (3) There are often many variables with few constraints on them.  Many variables may be introduced without being significantly constrained.
+\paragraph{Lattice operations.}
+Finally, the analysis of loops is commonly based on the computation of
+abstract post-fixpoints~\cite{cc:popl:77}, thus \( \adom \) should provide
+sound over-approximation of concrete states join.
+In the logical point of view, this amounts to computing a common weakening
+for two abstract constraints.
+This is performed by an operator \( \adomjoin: \adom \times \adom
+\rightarrow \adom \) such that, for all \( \astate_0, \astate_1 \),
+\( \gammadom( \astate_0 ) \cup \gammadom( \astate_1 ) \subseteq
+\gammadom( \adomjoin( \astate_0, \astate_1 ) ) \).
+Widening operator \( \adomwiden \) should satisfy the same property
+and ensure termination of any sequence of abstract iterates.
 
-\paragraph{Key reliefs:}  As opposed to model checkers, symbolic set abstraction is easier in () ways. (1) There are often fewer variables.  Since not all variables are set variables, the total number of variables is significantly lower.  (2) Relationships between variables are not as complex.  Because the transition relation does not have to be included in the Boolean formulas, the set abstraction is only responsible for relationships that form between set variables.  These can be much simpler than what the full transition relation would dictate.  (3) Variables are often clustered into small groups that are tightly inter-related.  This means that packing and slicing techniques can be extremely beneficial.
+Last, operator \( \adomisle: \adom \times \adom \rightarrow \{ \true,
+\false \} \) conservatively decides implication among abstract set
+constraints (by ensuring that \( \adomisle( \astate_0, \astate_1 ) =
+\true \Longrightarrow \gammadom( \astate_0 ) \subseteq \gammadom(
+\astate_1 ) \)), and allows to verify the convergence of abstract
+iterates.
+
+%ac: Should we include the rename operator here?  It seems critical to a lot of what we do, and while we consider it fairly trivial for domains, it is a non-trivial, expensive operation for SMT and solver domains.
