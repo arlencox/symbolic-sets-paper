@@ -129,8 +129,8 @@ Domain operations are straightforward: $\adomjoin$ and $\adomwiden$ are implemen
 % - example
 \begin{example}[BDD-based join]  Consider the same inputs as Example~\ref{ex:Qjoin}.  Encoding them to BDDs (and using some Boolean-algebraic notation as shorthand) yields the following results:
 \begin{align*}
-  & \astate_0 = X_1 \subseteq X_3 \logand X_3 \subseteq X_2 = \textrm{ITE}(X_1, X_2 \wedge X_3, \textrm{ITE}(X_2, \textsc{True}, \neg X_3)) \\
-  & \astate_1 = X_1 \subseteq X_4 \logand X_4 \subseteq X_2 = \textrm{ITE}(X_1, X_2 \wedge X_4, \textrm{ITE}(X_2, \textsc{True}, \neg X_3)) \\
+  & \astate_0 = \logic{X_1 \subseteq X_3 \logand X_3 \subseteq X_2} = \textrm{ITE}(X_1, X_2 \wedge X_3, \textrm{ITE}(X_2, \textsc{True}, \neg X_3)) \\
+  & \astate_1 = \logic{X_1 \subseteq X_4 \logand X_4 \subseteq X_2} = \textrm{ITE}(X_1, X_2 \wedge X_4, \textrm{ITE}(X_2, \textsc{True}, \neg X_3)) \\
   & \adomjoin(\astate_0, \astate_1 ) = \textrm{ITE}(X_1, X_2 \wedge \textrm{ITE}(X_3, \textsc{True}, X_4), \\
   & \qquad \qquad \qquad \qquad \qquad \quad \;\; \textrm{ITE}(X_2, \textsc{True}, \textrm{ITE}(X_3, \neg X_4, \textsc{True})))
 \end{align*}
