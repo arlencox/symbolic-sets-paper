@@ -24,35 +24,52 @@ This set reasoning allows precise symbolic tracking of the provenance
 of map partitions.
 
 \begin{figure}[tb]
-  \newbox\exprogbox
-  \begin{lrbox}{\exprogbox}
-    \begin{minipage}[t][1cm][b]{0.4\textwidth}
-      \begin{lstlisting}[language=python]
+  \begin{center}
+    \begin{lstlisting}[language=python]
 def extend(dst, src):
   for x in src:
-    # invariant point
+    \end{lstlisting}
+    \qquad \qquad
+    \(
+    \aform{
+      \exists X_v, X_n. \; keys(\ttvar{src})
+      = X_v \suplus \{\varx\} \suplus X_n \logand keys(\ttvar{dst})
+      = (keys(\ttvar{dst})_0 \setminus X_v) \suplus X_v
+    }
+    \)
+    \begin{lstlisting}
     dst[x] = src[x]
-      \end{lstlisting}
-    \end{minipage}
-  \end{lrbox}
-  \newbox\exproginv
-  \begin{lrbox}{\exproginv}
-    \begin{minipage}[t][0.9cm][b]{0.4\textwidth}
-      \begin{align*}
-        \exists X_v, X_n. \; keys(\ttvar{src})
-        & = X_v \suplus \{\varx\} \suplus X_n
-        \\
-        {} \logand keys(\ttvar{dst})
-        & = (keys(\ttvar{dst})_0 \setminus X_v) \suplus X_v
-      \end{align*}
-    \end{minipage}
-  \end{lrbox}
-  \centering
-  \subfigure[Function to copy all keys and values from map \ttvar{src}
-  onto map \ttvar{dst}]{\usebox\exprogbox}
-  \quad
-  \subfigure[Set abstraction at \texttt{\textit{invariant point}}]{%
-    \usebox\exproginv}
+    \end{lstlisting}
+  \end{center}
+%   \newbox\exprogbox
+%   \begin{lrbox}{\exprogbox}
+%     \begin{minipage}[t][1cm][b]{0.4\textwidth}
+%       \begin{lstlisting}[language=python]
+% def extend(dst, src):
+%   for x in src:
+%     # invariant point
+%     dst[x] = src[x]
+%       \end{lstlisting}
+%     \end{minipage}
+%   \end{lrbox}
+%   \newbox\exproginv
+%   \begin{lrbox}{\exproginv}
+%     \begin{minipage}[t][0.9cm][b]{0.4\textwidth}
+%       \begin{align*}
+%         \exists X_v, X_n. \; keys(\ttvar{src})
+%         & = X_v \suplus \{\varx\} \suplus X_n
+%         \\
+%         {} \logand keys(\ttvar{dst})
+%         & = (keys(\ttvar{dst})_0 \setminus X_v) \suplus X_v
+%       \end{align*}
+%     \end{minipage}
+%   \end{lrbox}
+%   \centering
+%   \subfigure[Function to copy all keys and values from map \ttvar{src}
+%   onto map \ttvar{dst}]{\usebox\exprogbox}
+%   \quad
+%   \subfigure[Set abstraction at \texttt{\textit{invariant point}}]{%
+%     \usebox\exproginv}
   \caption{Set constraints can relate portions of data structures}
   \label{fig:intro-example} \label{f:1:intro}
 \end{figure}
