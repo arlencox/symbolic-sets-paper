@@ -24,23 +24,29 @@ This set reasoning allows precise symbolic tracking of the provenance
 of map partitions.
 
 \begin{figure}[tb]
-  \begin{center}
-    \begin{lstlisting}[language=python]
+  \centering
+%  \begin{center}
+    \begin{lstlisting}[language=python,mathescape=true]
 def extend(dst, src):
   for x in src:
-    \end{lstlisting}
-    \qquad \qquad
-    \(
-    \aform{
+      $\aform{
       \exists X_v, X_n. \; keys(\ttvar{src})
       = X_v \suplus \{\varx\} \suplus X_n \logand keys(\ttvar{dst})
       = (keys(\ttvar{dst})_0 \setminus X_v) \suplus X_v
-    }
-    \)
-    \begin{lstlisting}
+      }$
     dst[x] = src[x]
     \end{lstlisting}
-  \end{center}
+%    \end{lstlisting}
+%    \qquad \qquad
+%    \(
+%    \aform{
+%        \exists X_v, X_n. \; keys(\ttvar{src})
+%        = X_v \suplus \{\varx\} \suplus X_n \logand keys(\ttvar{dst})
+%        = (keys(\ttvar{dst})_0 \setminus X_v) \suplus X_v
+%    }
+%    \)
+%    \begin{lstlisting}
+%  \end{center}
 %   \newbox\exprogbox
 %   \begin{lrbox}{\exprogbox}
 %     \begin{minipage}[t][1cm][b]{0.4\textwidth}
