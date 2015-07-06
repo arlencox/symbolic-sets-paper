@@ -14,7 +14,9 @@ behaviors on these predicates, and their implementation.
 Dynamic programming languages such as JavaScript feature {\em open objects}
 that support dynamic addition and deletion of attributes and iteration over
 them.
-The analysis presented in~\cite{hoo:14:sas} verifies open-object-/map-manipulating programs such as the one in Figure~\ref{f:1:intro}, by
+The analysis presented in~\cite{hoo:14:sas} verifies
+open-object-/map-manipulating programs such as the one
+in Figure~\ref{f:1:intro}, by
 inferring relations between the sets of attributes
 of distinct objects.
 Since objects may have an unbounded number of attributes, the analysis must 
@@ -28,13 +30,15 @@ abstract the attributes and their contents.
   \caption{Open objects and their abstraction}
   \label{f:2:hoo}
 \end{figure}
-Figure~\ref{f:2:hoo} represents a simplified state at the indicated point in Figure~\ref{f:1:intro}a,
+Figure~\ref{f:2:hoo} represents a simplified state at the indicated
+point in Figure~\ref{f:1:intro}(a),
 after two iteration (thus two fields were copied).
 We focus on the set of attributes of each object, and ignore their
 contents (which could be described using similar techniques).
 To precisely abstract the relations between the attributes of both objects
-(\eg copied attributes are common to both objects), we partition the attributes into a series of attribute sets,
- and express relations among these sets.
+(\eg copied attributes are common to both objects), we partition the
+attributes into a series of attribute sets,
+and express relations among these sets.
 The purpose of the set abstract domain is to represent such set
 relations.
 The right hand side of Figure~\ref{f:2:hoo} depicts such an abstract
@@ -66,12 +70,12 @@ describe memory states and on inductive definitions to summarize
 unbounded structures such as lists.
 Unstructured sharing is very challenging as it cannot be described using
 conventional inductive definitions.
-Figure~\ref{f:3:memcad}a displays the representation of a three nodes
+Figure~\ref{f:3:memcad}(a) displays the representation of a three nodes
 graph using an adjacency list data-structure.
 To summarize such a structure using inductive predicates in separation
 logic, \cite{memcad:15:sas} augments the list inductive
 predicates with set information, which express where edges may point to.
-Figure~\ref{f:3:memcad}b shows this representation in
+Figure~\ref{f:3:memcad}(b) shows this representation in
 a form where the first node is kept materialized.
 It asserts that the edges of that node and other nodes
 point to the address of a valid node, namely an element of \( \{ \naddr{0}
