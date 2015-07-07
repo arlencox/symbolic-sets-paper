@@ -1,14 +1,14 @@
 \section{Logic and Set Abstraction}
 \label{sec:logic-and-set-abstraction} \label{s:3:abs}
-In this section, we define the signature of a set abstract domain that
-implements all the operations required by the analyses shown in
-Section~\ref{s:2:over}.
+We now define the elements and operators of a set abstract domain that
+implements all the analyses shown in Section~\ref{s:2:over} require.
 
 \paragraph{Concrete states.}
 In this paper, we use symbols $\setvw$, $\setvx$, $\setvy$, and $\setvz$
-to represent set variables in $\setvars$.
+and let $\setvars$ represent the set of set variables.
 We are interested in purely symbolic set relations, and do not make any
-assumption on the type of the set elements.
+assumption on the type of the set elements (in practice these are pointers
+or scalars).
 We let \( \values \) denote the set of all these elements.
 A concrete state is a function \( \state: \setvars \rightarrow
 \partsof{\values} \).
@@ -17,7 +17,7 @@ We write \( \states \) for the set of such elements.
 \paragraph{Symbolic sets.}
 Before we set up the signature of abstract domains, we fix a language
 of set predicates, that will be used as a basis for abstract elements,
-and the communication with the abstract domain.
+and for the communication with the set abstract domain.
 \begin{definition}[Symbolic Sets]
   \label{d:1:symsets}
   {\em Symbolic sets} are defined by the grammar:
@@ -48,7 +48,7 @@ and we use $\logic{L}$ for abstract states with the same concretization.
     \textrm{ iff }
     \state, c' \models{E}
     \textrm{ and } \forall v \in \values.
-    \; v \in c \leftrightarrow v \not\in c'
+    \; v \in c \Leftrightarrow v \not\in c'
     \\
     & \state, c \models E_1 \cup E_2
     \textrm{ iff }
@@ -113,7 +113,7 @@ we shall note \( \aform{L} \) for an abstract element describing
   A very basic example of such domain is the {\em (non-)emptiness} domain
   that comprises the following elements:
   \begin{compactitem}
-  \item \( \bot \) which denotes the unsatisfiable abstract constraint
+  \item \( \bot \), which denotes the unsatisfiable abstract constraint
     (\ie, \( \gammadom( \bot ) = \emptyset ) \));
   \item the functions from \( \setvars \) into \( \{ [=\emptyset],
     [\not=\emptyset], \top \} \), which map each set variable into
@@ -145,7 +145,7 @@ analyses shown in Section~\ref{s:2:over}.
   = \true \Longrightarrow \gammadom( \astate ) = \emptyset \).
 
 \item \emph{Forgetting a set variable.}
-  Static analysis tools drop set variables when they become redundant.
+  Static analysis tools drop set variables that become redundant.
   In the open object example of Section~\ref{s:2:over}, this occurs when
   the singleton symbol is eliminated at the end of the loop.
   To do this, we require set abstract domain \( \adom \) to provide
