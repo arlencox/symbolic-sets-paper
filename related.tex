@@ -1,7 +1,19 @@
 \section{Conclusions and Related Work}
 The problem of creating scalable, precise, and predictable abstractions for sets remains challenging.  This paper introduced several ways of approaching this problem and showed that for symbolic set abstractions, binary decision diagrams offer good performance, precision, and predictability trade-offs.  However, it is preferable to craft a custom abstraction such as the linear abstraction.  This offers more predictable performance by only having the necessary precision.
 
-There are other set abstractions available.  They all offer different functionality at different costs.  The QUIC graphs abstraction~\cite{ab:ecoop:13,quicr:cav:14} focuses on combining reasoning about contents with symbolic set reasoning.  This comes at the cost of performance, precision, and predictability when it comes to purely symbolic set reasoning.  The FixBag abstraction~\cite{fixbag:cav:11} attacks the problems of multisets or bags offering cardinality reasoning as well as symbolic set reasoning.  Similar to QUIC graphs, it exchanges performance, precision, and predictability for this functionality.  The linear and the BDD-based abstractions we present here designed to be scalable, precise, and predictable rather than complex.
+There are other set abstractions available.
+They all offer different functionality at different costs.
+The QUIC graphs abstraction~\cite{ab:ecoop:13,quicr:cav:14} focuses on
+combining reasoning about contents with symbolic set reasoning.
+This comes at the cost of performance, precision, and predictability
+when it comes to purely symbolic set reasoning.
+The FixBag abstraction~\cite{fixbag:cav:11} attacks the problems of
+multisets or bags offering cardinality reasoning as well as symbolic
+set reasoning.
+Similar to QUIC graphs, it exchanges performance, precision, and
+predictability for this functionality.
+The linear and the BDD-based abstractions we present here are designed
+to be scalable, precise, and predictable rather than complex.
 
 There are several decision procedures for sets.  Bradley et al.~\cite{bradley:vmcai:06} introduced a decision procedure for set contents and relationships (without cardinality).  BAPA~\cite{knr:jar:06,jahob:thesis:07} is a decision procedure for sets with cardinality.  Z3~\cite{mb:tacas:08} also includes a decision procedure for sets with contents.  None of these decision procedures are designed for invariant generation.  It is possible that interpolation procedures~\cite{interp:cav:03} could be designed based upon these procedures, but to our knowledge this has not been done.  Regardless, without invariant generation that is compatible with static analysis, it is difficult to use this work as a component of an existing analysis.
 
