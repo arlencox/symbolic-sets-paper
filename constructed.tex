@@ -193,12 +193,9 @@ An abstract state in the cluster functor consists of one of three values: $\top$
 
 % - example
 \begin{example}[Constraining a packed abstract state]
-Consider the following abstract state represented by the logic from Definition~\ref{d:1:symsets}, lifted into three packs with ids $0$, $1$, and $2$:
+Consider the following abstract state represented by the logic from Definition~\ref{d:1:symsets}, lifted into two packs with ids $0$, and $1$:
 $
-  \astate_0 = [0 \mapsto \aform{X_0 \subseteq X_1}; \; 1 \mapsto \aform{Y_0 \subseteq Y_1}; \; 2 \mapsto \aform{Z_0 \subseteq Z_1}]
+  \astate_0 = [0 \mapsto \aform{X_0 \subseteq X_1}; \; 1 \mapsto \aform{Y_0 \subseteq Y_1} ]
 $.
-The operation $\adomassume(\astate_0, Y_1 \subseteq Y_2)$ operates only on pack id $1$.  It does not have to involve any computation on packs $0$ or $1$.  The resulting pack $1$ is: $1 \mapsto \adomassume(\aform{Y_0 \subseteq Y_1}, Y_1 \subseteq Y_2)$.  However, if the operation $\adomassume(\astate_0, X_1 \subseteq Y_0)$ is performed, the packs are merged and the following operations are performed:
-\begin{align*}
-\astate_0 = \quad 0 \mapsto \adomassume(\adommeet(\aform{X_0 \subseteq X_1}, \aform{Y_0 \subseteq Y_1}), X_1 \subseteq Y_0) \qquad 2 \mapsto \aform{Z_0 \subseteq Z_1}
-\end{align*}
+The operation $\adomassume(\astate_0, Y_1 \subseteq Y_2)$ operates only on pack id $1$.  It does not have to involve any computation on pack $0$.  The resulting pack $1$ is: $1 \mapsto \adomassume(\aform{Y_0 \subseteq Y_1}, Y_1 \subseteq Y_2)$.
 \end{example}
