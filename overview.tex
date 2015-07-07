@@ -31,7 +31,7 @@ abstract the attributes and their contents.
   \label{f:2:hoo}
 \end{figure}
 Figure~\ref{f:2:hoo} represents a simplified state at the indicated
-point in Figure~\ref{f:1:intro}(a),
+point in Figure~\ref{f:1:intro},
 after two iterations (thus two fields were copied).
 We focus on the set of attributes of each object, and ignore their
 contents (which could be described using similar techniques).
@@ -92,8 +92,8 @@ The analysis of~\cite{memcad:15:sas} introduces a summary predicate
 \( \textbf{graph}( \naddr{0}, \mcN ) \) where \( \naddr{0} \) is the
 address of the first node and \( \mcN \) the set of all node addresses.
 This predicate is defined by induction over the ``backbone'' of the
-structure, and fully takes into account the property that all
-\( \fldnext \) edges point to a valid node address in \( \mcN \).
+structure, and fully takes into account the property that all edges
+point to a valid node address in \( \mcN \).
 Henceforth, abstract states comprise both a {\em memory} part (which
 consists of a formula in separation logic with inductive predicates)
 and a {\em set abstraction}.

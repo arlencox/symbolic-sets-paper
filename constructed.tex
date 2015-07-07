@@ -100,7 +100,7 @@ but additional patterns increase the cost of joins.
       \astate_1 &= \aform{X_1 \subseteq X_4 \logand X_4 \subseteq X_2} &
       \adomjoin(\astate_0, \astate_1 )
     \end{align*}
-    There is an obvious result: $\aform{X_1 \subseteq X_2}$.  Whether or not QUIC graphs derives this result or top is determined by the pattern matches that are installed.  If the pattern $\aform{X_a \subseteq X_b \logand X_b \subseteq X_c} \Rightarrow \aform{X_a \subseteq X_b}$ is installed, it will first apply the pattern to both sides and then keep common conjuncts, getting the desired result.  Without that pattern, or a similar substitute, QUIC graphs derives $\aform{\top}$.
+    There is an obvious result: $\aform{X_1 \subseteq X_2}$.  Whether or not QUIC graphs derives this result or top is determined by the pattern matches that are installed.  If the pattern $\aform{X_a \subseteq X_b \logand X_b \subseteq X_c} \Rightarrow \aform{X_a \subseteq X_c}$ is installed, it will first apply the pattern to both sides and then keep common conjuncts, getting the desired result.  Without that pattern, or a similar substitute, QUIC graphs derives $\aform{\top}$.
 \end{example}
 
 \subsection{BDD-based Set Constraints}
