@@ -76,40 +76,18 @@ description of non disjoint unions.
 \subsection{QUIC graphs}
 \label{s:4:2:quic}
 
-A QUIC graph is a directed hypergraph data structure used to represent relational set constraints.  Each edge in the hypergraph corresponds to a subset constrtaint and each hypergraph is a conjunction of subset constraints as described by the following logic $P$.  Each vertex of the graph can be an element of $S$: the empty set, a singleton set, or a set variable:
-% - set of predicates
-\begin{align*}
-  P ::= P \logand P \ | \ S \cap \ldots \cap S \subseteq S \cup \ldots \cup S \qquad
-  S ::= \emptyset \ | \ \{x\} \ | \ X
-\end{align*}
-
-% - concretization function
-% xr: concretizes => concretize ? (to me QUIC graphs is plural, but you
-%     consistantly treat it as singular, so I wonder what to do)
-QUIC graphs concretizes in a similar fashion to constrain logic as defined
-in Figure~\ref{f:4:symsets}.
-Each edge concretizes according to its logical meaning:
-\begin{align*}
-  \gamma(P_1 \logand P_2) &\defeq \{ \state \ | \ \state \in \gamma(P_1) \logand \state \in \gamma(P_2) \} \\
-  \gamma(\ S_1 \cap \ldots \subseteq S'_1 \cup \ldots) &\defeq \Set{ \state | \begin{array}{@{}l@{}}
-       (\state,c_1) \in \gamma(S_1) \logand \ldots \logand (\state,c'_1) \in \gamma(S'_1) \logand \ldots \\
-       {} \logand c_1 \cap \ldots \subseteq c'_1 \cup \ldots
-    \end{array}
-  } \\
-  \gamma(\emptyset) \defeq \{ (\state, \emptyset) \}
-  \qquad \gamma(\{x\}) &\defeq \{ (\state, \state(x)) \ | \ |\state(x)| = 1 \} \qquad \gamma(X) \defeq \{ (\state, \state(X)) \}
-\end{align*}
+A QUIC graph~\cite{ab:ecoop:13} is a directed hypergraph data structure used to represent relational set constraints.  Each edge in the hypergraph corresponds to a subset constrtaint and each hypergraph is a conjunction of subset constraints where each constraint is of the form: $\aform{X_1 \cap \ldots \cap X_n \subseteq Y_1 \cup \ldots \cup Y_m}$.  Each variable can also be constrained to be a singleton with constraints such as $\aform{|X| = 1}$.  The concretization $\gamma_q : \adom_q \rightarrow \partsof{\states}$ is of the same form as that of the symbolic sets language of Definition~\ref{d:1:symsets}.
 
 % - algorithms main ideas
-QUIC graphs is designed for efficiently performing two operations: (1) $\adomforget$, which matches edges containing the symbol to be forgotten with each other to produce new edges without that symbol; and (2) content reasoning, which is not a design goal for symbolic sets.  The join operation is primarily based on saturation heuristics.  It keeps common conjunctions from both sides of the join.  To aid this process, it uses a form of saturation that produces new conjuncts based on pattern matches.  A sufficiently large set of patterns must be provided to attain precision, but additional patterns increases the cost of joins.
+QUIC graphs is designed for efficiently performing two operations: (1) $\adomforget$, which matches edges containing the symbol to be forgotten with each other to produce new edges without that symbol; and (2) content reasoning, which is not a design goal for symbolic sets.  The $\adomjoin$ and $\adomwiden$ operations are primarily based on saturation heuristics.  They keeps common conjunctions from both arguments.  To aid this process, they use a form of saturation that produces new conjuncts based on pattern matches.  A sufficiently large set of patterns must be provided to attain precision, but additional patterns increases the cost of joins.
 % - example
 \begin{example}[QUIC graph join] \label{ex:Qjoin}  Consider the following join operation:
     \begin{align*}
-      \astate_0 &= X_1 \subseteq X_3 \logand X_3 \subseteq X_2 &
-      \astate_1 &= X_1 \subseteq X_4 \logand X_4 \subseteq X_2 &
+      \astate_0 &= \aform{X_1 \subseteq X_3 \logand X_3 \subseteq X_2} &
+      \astate_1 &= \aform{X_1 \subseteq X_4 \logand X_4 \subseteq X_2} &
       \adomjoin(\astate_0, \astate_1 )
     \end{align*}
-    There is an obvious result: $X_1 \subseteq X_2$.  Whether or not QUIC graphs derives this result or top is determined by the pattern matches that are installed.  If the pattern $X_a \subseteq X_b \logand X_b \subseteq X_c \Rightarrow X_a \subseteq X_b$ is installed, it will first apply the pattern to both sides and then keep common conjuncts, getting the desired result.  Without that pattern, or a similar substitute, QUIC graphs derives $\top$.
+    There is an obvious result: $\aform{X_1 \subseteq X_2}$.  Whether or not QUIC graphs derives this result or top is determined by the pattern matches that are installed.  If the pattern $\aform{X_a \subseteq X_b \logand X_b \subseteq X_c} \Rightarrow \aform{X_a \subseteq X_b}$ is installed, it will first apply the pattern to both sides and then keep common conjuncts, getting the desired result.  Without that pattern, or a similar substitute, QUIC graphs derives $\aform{\top}$.
 \end{example}
 
 \subsection{BDD-based Set Constraints}
@@ -130,12 +108,12 @@ Domain operations are straightforward: $\adomjoin$ and $\adomwiden$ are implemen
 % - example
 \begin{example}[BDD-based join]  Consider the same inputs as Example~\ref{ex:Qjoin}.  Encoding them to BDDs (and using some Boolean-algebraic notation as shorthand) yields the following results:
 \begin{align*}
-  & \astate_0 = \logic{X_1 \subseteq X_3 \logand X_3 \subseteq X_2} = \textrm{ITE}(X_1, X_2 \wedge X_3, \textrm{ITE}(X_2, \textsc{True}, \neg X_3)) \\
-  & \astate_1 = \logic{X_1 \subseteq X_4 \logand X_4 \subseteq X_2} = \textrm{ITE}(X_1, X_2 \wedge X_4, \textrm{ITE}(X_2, \textsc{True}, \neg X_3)) \\
+  & \astate_0 = \aform{X_1 \subseteq X_3 \logand X_3 \subseteq X_2} = \textrm{ITE}(X_1, X_2 \wedge X_3, \textrm{ITE}(X_2, \textsc{True}, \neg X_3)) \\
+  & \astate_1 = \aform{X_1 \subseteq X_4 \logand X_4 \subseteq X_2} = \textrm{ITE}(X_1, X_2 \wedge X_4, \textrm{ITE}(X_2, \textsc{True}, \neg X_3)) \\
   & \adomjoin(\astate_0, \astate_1 ) = \textrm{ITE}(X_1, X_2 \wedge \textrm{ITE}(X_3, \textsc{True}, X_4), \\
   & \qquad \qquad \qquad \qquad \qquad \quad \;\; \textrm{ITE}(X_2, \textsc{True}, \textrm{ITE}(X_3, \neg X_4, \textsc{True})))
 \end{align*}
-  The result of this join is equivalent to the set constraints $X_1 \subseteq X_2$, $X_1 \subseteq X_3 \cup X_4$, and $X_3 \cap X_4 \subseteq X_2$, which includes not only the obvious result of $X_1 \subseteq X_2$, but also other, possibly useful results.  It is a precise join.
+  The result of this join is equivalent to the set constraints $\aform{X_1 \subseteq X_2}$, $\aform{X_1 \subseteq X_3 \cup X_4}$, and $\aform{X_3 \cap X_4 \subseteq X_2}$, which includes not only the obvious result of $\aform{X_1 \subseteq X_2}$, but also other, possibly useful results.  It is a precise join.
 \end{example}
 
 BDDs can be converted back into set constraints by iterating over all constraints they imply.  This is an expensive operation that is equivalent to iterating over all of the prime implicants of the negation of the Boolean function represented by the BDD.  Each prime implicant can be converted into a conjunct of the form used by QUIC graphs.
@@ -146,7 +124,7 @@ BDDs can be converted back into set constraints by iterating over all constraint
 % - origin of the equalities problem (cases where there are too many variables
 %   and most of them are equal, consequences in terms of complexity)
 
-When analyzing real programs, in addition to complex set constraints, there are often many very simple equality constraints of the form $X = Y$.  These can be a problem in several ways.  In BDDs, for example, while equalities are normalized and handled precisely, they can grow the size of the BDDs significantly.  This results in significantly increased memory usage and decreased efficiency since many BDD operation rebuild the BDD.  In QUIC graphs, equalities grow the size of the graph, and place significantly more load on the pattern matching system, potentially causing a blow up in the number of constraints because QUIC graphs can represent each variant of an expression rewritten using all available equalities.  In linear set abstractions, there are similar potential problems.
+When analyzing real programs, in addition to complex set constraints, there are often many very simple equality constraints of the form $\aform{X = Y}$.  These can be a problem in several ways.  In BDDs, for example, while equalities are normalized and handled precisely, they can grow the size of the BDDs significantly.  This results in significantly increased memory usage and decreased efficiency since many BDD operation rebuild the BDD.  In QUIC graphs, equalities grow the size of the graph, and place significantly more load on the pattern matching system, potentially causing a blow up in the number of constraints because QUIC graphs can represent each variant of an expression rewritten using all available equalities.  In linear set abstractions, there are similar potential problems.
 
 As a result, abstractions like QUIC graphs and the linear set abstraction have special handling for equality.  This improves performance and precision at the cost of complexity.  Instead, much of this complexity can be moved outside the abstraction and handled by lifting the abstraction to one that keeps track of equalities separately from other kinds of constraints.
 
@@ -168,12 +146,12 @@ Domain operations $\adomjoin$, $\adomwiden$, and $\adomisle$, unify their corres
 \begin{example}[Equality functor join]
 Consider the following two abstract states, where the underlying domain is just shown as symbolic set constraints:
 \begin{align*}
-  \astate_0 = ([W \mapsto W, X \mapsto W, Y \mapsto W], W \subseteq Z) \quad
-  \astate_1 = ([X \mapsto X, Y \mapsto X], W \subseteq X \wedge X \subseteq Z)
+  \astate_0 = ([W \mapsto W, X \mapsto W, Y \mapsto W], \aform{W \subseteq Z}) \ \ 
+  \astate_1 = ([X \mapsto X, Y \mapsto X], \aform{W \subseteq X \wedge X \subseteq Z})
 \end{align*}
-In the join, the equivalence classes are unified, producing the resulting $\eqrep$: $[X \mapsto X, Y \mapsto X]$.  The equality $W = X$ from $\astate_0$ is not represented in the unification, so it is added back to the underlying domain in $\astate_0$.  The result is therefore
+In the join, the equivalence classes are unified, producing the resulting $\eqrep$: $[X \mapsto X, Y \mapsto X]$.  The equality $\aform{W = X}$ from $\astate_0$ is not represented in the unification, so it is added back to the underlying domain in $\astate_0$.  The result is therefore
 \begin{align*}
-  ([X \mapsto X, Y \mapsto X], \adomjoin(W = X \wedge W \subseteq Z, W \subseteq X \wedge X \subseteq Z))
+  ([X \mapsto X, Y \mapsto X], \adomjoin(\aform{W = X \wedge W \subseteq Z}, \aform{W \subseteq X \wedge X \subseteq Z}))
 \end{align*}
 \end{example}
 
@@ -195,10 +173,10 @@ An abstract state in the cluster functor consists of one of three values: $\top$
 \begin{example}[Constraining a packed abstract state]
 Consider the following abstract state represented by the logic from Definition~\ref{d:1:symsets}, lifted into three packs with ids $0$, $1$, and $2$:
 $
-  \astate_0 = [0 \mapsto X_0 \subseteq X_1; \; 1 \mapsto Y_0 \subseteq Y_1; \; 2 \mapsto Z_0 \subseteq Z_1]
+  \astate_0 = [0 \mapsto \aform{X_0 \subseteq X_1}; \; 1 \mapsto \aform{Y_0 \subseteq Y_1}; \; 2 \mapsto \aform{Z_0 \subseteq Z_1}]
 $.
-The operation $\adomassume(\astate_0, Y_1 \subseteq Y_2)$ operates only on pack id $1$.  It does not have to involve any computation on packs $0$ or $1$.  The resulting pack $1$ is: $1 \mapsto \adomassume(Y_0 \subseteq Y_1, Y_1 \subseteq Y_2)$.  However, if the operation $\adomassume(\astate_0, X_1 \subseteq Y_0)$ is performed, the packs are merged and the following operations are performed:
+The operation $\adomassume(\astate_0, Y_1 \subseteq Y_2)$ operates only on pack id $1$.  It does not have to involve any computation on packs $0$ or $1$.  The resulting pack $1$ is: $1 \mapsto \adomassume(\aform{Y_0 \subseteq Y_1}, Y_1 \subseteq Y_2)$.  However, if the operation $\adomassume(\astate_0, X_1 \subseteq Y_0)$ is performed, the packs are merged and the following operations are performed:
 \begin{align*}
-\astate_0 = \quad 0 \mapsto \adomassume(\adommeet(X_0 \subseteq X_1, Y_0 \subseteq Y_1), X_1 \subseteq Y_0) \qquad 2 \mapsto Z_0 \subseteq Z_1
+\astate_0 = \quad 0 \mapsto \adomassume(\adommeet(\aform{X_0 \subseteq X_1}, \aform{Y_0 \subseteq Y_1}), X_1 \subseteq Y_0) \qquad 2 \mapsto \aform{Z_0 \subseteq Z_1}
 \end{align*}
 \end{example}
