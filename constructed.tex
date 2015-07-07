@@ -16,17 +16,18 @@ efficient one.
 Our first set abstract domain relies on {\em linear} set equality
 constraints, of the form \( \aform{\setvx = \{ y_0, \ldots, y_k \} \suplus
   \setvz_0 \suplus \ldots \suplus \setvz_l} \).
-The advantage of this representation is to provide a rather straightforward
+The advantage of such constraints is to provide a rather straightforward
 normalization of the representation of constraints.
 Note they also include emptiness constraints.
 Our implementation of abstract domain \( \adomlin \) describes three kinds
 of constraints:
 \begin{compactitem}
-\item {\em linear} constraints of the form \( \aform{\setvx = \setvy_0
-    \suplus \ldots \suplus \setvy_k \suplus \setvz_0 \suplus \ldots
+\item acyclic {\em linear} constraints of the form \( \aform{\setvx =
+    \setvy_0 \suplus \ldots \suplus \setvy_k \suplus \setvz_0 \suplus \ldots
     \suplus \setvz_l} \), where \( \setvy_0, \ldots, \setvy_k \) are
   singletons (in our implementation, each variable may appear at most
-  {\em once} as the left hand side of such a constraint);
+  {\em once} as the left hand side of such a constraint, to enable
+  normalization);
 \item inclusion constraints of the form \( \aform{\setvy \subseteq \setvx} \);
 \item equality constraints of the form \( \aform{\setvy = \setvx} \).
 \end{compactitem}
@@ -36,10 +37,11 @@ The associated concretization \( \gammalin: \adomlin \rightarrow
 \partsof{\states} \) is of the same form as that of the symbolic sets
 language of Definition~\ref{d:1:symsets} (thus, we do not formalize it
 in full details).
-The machine representation of our implementation utilizes persistent
-dictionaries, which reduces basic queries for facts (such as: ``does
-abstract state \( \astate \) entail that \( \setvx \subseteq \setvy
-\suplus \setvz \)~?'') to dictionary searches.
+The machine representation utilizes persistent dictionaries, that stand
+for functions over a finite domain.
+This reduces basic queries for facts (such as: ``does abstract state
+\( \astate \) entail that \( \setvx \subseteq \setvy \suplus \setvz
+\)~?'') to dictionary searches.
 
 \paragraph{Abstract operators.}
 The core algorithm of \( \adomlin \) normalizes an abstract values by
@@ -64,8 +66,9 @@ constraints:
   the set of constraints \( \aform{\setvx_0 = \setvx_1 \suplus \setvx_2
     \wedge \setvx_3 = \emptyset} \) (\resp, \( \aform{\setvx_0 = \setvx_1
     \suplus \setvx_2 \suplus \setvx_3} \)).
-  Then \( \adomjoin( \astate_0, \astate_1 ) \) returns the constraint
-  \( \aform{\setvx_0 = \setvx_1 \suplus \setvx_2 \suplus \setvx_3} \).
+  Then \( \adomjoin( \astate_0, \astate_1 ) \) returns an element that
+  represents the constraint \( \aform{\setvx_0 = \setvx_1 \suplus \setvx_2
+    \suplus \setvx_3} \).
 \end{example}
 \memcad~\cite{memcad:15:sas} relies on \( \adomlin \) to represent set
 constraints since it mainly needs to express constraints over set
@@ -79,7 +82,17 @@ description of non disjoint unions.
 A QUIC graph~\cite{ab:ecoop:13} is a directed hypergraph data structure used to represent relational set constraints.  Each edge in the hypergraph corresponds to a subset constrtaint and each hypergraph is a conjunction of subset constraints where each constraint is of the form: $\aform{X_1 \cap \ldots \cap X_n \subseteq Y_1 \cup \ldots \cup Y_m}$.  Each variable can also be constrained to be a singleton with constraints such as $\aform{|X| = 1}$.  The concretization $\gamma_q : \adom_q \rightarrow \partsof{\states}$ is of the same form as that of the symbolic sets language of Definition~\ref{d:1:symsets}.
 
 % - algorithms main ideas
-QUIC graphs is designed for efficiently performing two operations: (1) $\adomforget$, which matches edges containing the symbol to be forgotten with each other to produce new edges without that symbol; and (2) content reasoning, which is not a design goal for symbolic sets.  The $\adomjoin$ and $\adomwiden$ operations are primarily based on saturation heuristics.  They keeps common conjunctions from both arguments.  To aid this process, they use a form of saturation that produces new conjuncts based on pattern matches.  A sufficiently large set of patterns must be provided to attain precision, but additional patterns increases the cost of joins.
+QUIC graphs is designed for efficiently performing two operations:
+(1) $\adomforget$, which matches edges containing the symbol to be
+forgotten with each other to produce new edges without that symbol; and
+(2) content reasoning, which is not a design goal for symbolic sets.
+The $\adomjoin$ and $\adomwiden$ operations are primarily based on
+saturation heuristics.
+They keep common conjunctions from both arguments.
+To aid this process, they use a form of saturation that produces new
+conjuncts based on pattern matches.
+A sufficiently large set of patterns must be provided to attain precision,
+but additional patterns increase the cost of joins.
 % - example
 \begin{example}[QUIC graph join] \label{ex:Qjoin}  Consider the following join operation:
     \begin{align*}
@@ -108,10 +121,19 @@ Domain operations are straightforward: $\adomjoin$ and $\adomwiden$ are implemen
 % - example
 \begin{example}[BDD-based join]  Consider the same inputs as Example~\ref{ex:Qjoin}.  Encoding them to BDDs (and using some Boolean-algebraic notation as shorthand) yields the following results:
 \begin{align*}
-  & \astate_0 = \aform{X_1 \subseteq X_3 \logand X_3 \subseteq X_2} = \textrm{ITE}(X_1, X_2 \wedge X_3, \textrm{ITE}(X_2, \textsc{True}, \neg X_3)) \\
-  & \astate_1 = \aform{X_1 \subseteq X_4 \logand X_4 \subseteq X_2} = \textrm{ITE}(X_1, X_2 \wedge X_4, \textrm{ITE}(X_2, \textsc{True}, \neg X_3)) \\
-  & \adomjoin(\astate_0, \astate_1 ) = \textrm{ITE}(X_1, X_2 \wedge \textrm{ITE}(X_3, \textsc{True}, X_4), \\
-  & \qquad \qquad \qquad \qquad \qquad \quad \;\; \textrm{ITE}(X_2, \textsc{True}, \textrm{ITE}(X_3, \neg X_4, \textsc{True})))
+  & \astate_0 = \aform{X_1 \subseteq X_3 \logand X_3 \subseteq X_2} =
+  \textrm{ITE}(X_1, X_2 \wedge X_3, \textrm{ITE}(X_2, \textsc{True},
+  \neg X_3))
+  \\
+  & \astate_1 = \aform{X_1 \subseteq X_4 \logand X_4 \subseteq X_2} =
+  \textrm{ITE}(X_1, X_2 \wedge X_4, \textrm{ITE}(X_2, \textsc{True},
+  \neg X_4))
+  \\
+  & \adomjoin(\astate_0, \astate_1 ) =
+  \textrm{ITE}(X_1, X_2 \wedge \textrm{ITE}(X_3, \textsc{True}, X_4),
+  \\
+  & \qquad \qquad \qquad \qquad \qquad \quad \;\;
+  \textrm{ITE}(X_2, \textsc{True}, \textrm{ITE}(X_3, \neg X_4, \textsc{True})))
 \end{align*}
   The result of this join is equivalent to the set constraints $\aform{X_1 \subseteq X_2}$, $\aform{X_1 \subseteq X_3 \cup X_4}$, and $\aform{X_3 \cap X_4 \subseteq X_2}$, which includes not only the obvious result of $\aform{X_1 \subseteq X_2}$, but also other, possibly useful results.  It is a precise join.
 \end{example}
