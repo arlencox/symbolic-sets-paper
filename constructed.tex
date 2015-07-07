@@ -100,7 +100,7 @@ but additional patterns increase the cost of joins.
       \astate_1 &= \aform{X_1 \subseteq X_4 \logand X_4 \subseteq X_2} &
       \adomjoin(\astate_0, \astate_1 )
     \end{align*}
-    There is an obvious result: $\aform{X_1 \subseteq X_2}$.  Whether or not QUIC graphs derives this result or top is determined by the pattern matches that are installed.  If the pattern $\aform{X_a \subseteq X_b \logand X_b \subseteq X_c} \Rightarrow \aform{X_a \subseteq X_c}$ is installed, it will first apply the pattern to both sides and then keep common conjuncts, getting the desired result.  Without that pattern, or a similar substitute, QUIC graphs derives $\aform{\top}$.
+    There is an obvious result: $\aform{X_1 \subseteq X_2}$.  Whether or not QUIC graphs derives this result or top is determined by the pattern matches that are installed.  If the pattern takes $\aform{X_a \subseteq X_b \logand X_b \subseteq X_c}$ and generates $\aform{X_a \subseteq X_c}$ is installed, it will first apply the pattern to both sides and then keep common conjuncts, getting the desired result.  Without that pattern, or a similar substitute, QUIC graphs derives $\aform{\top}$.
 \end{example}
 
 \subsection{BDD-based Set Constraints}
@@ -138,7 +138,7 @@ Domain operations are straightforward: $\adomjoin$ and $\adomwiden$ are implemen
   The result of this join is equivalent to the set constraints $\aform{X_1 \subseteq X_2}$, $\aform{X_1 \subseteq X_3 \cup X_4}$, and $\aform{X_3 \cap X_4 \subseteq X_2}$, which includes not only the obvious result of $\aform{X_1 \subseteq X_2}$, but also other, possibly useful results.  It is a precise join.
 \end{example}
 
-BDDs can be converted back into set constraints by iterating over all constraints they imply.  This is an expensive operation that is equivalent to iterating over all of the prime implicants of the negation of the Boolean function represented by the BDD.  Each prime implicant can be converted into a conjunct of the form used by QUIC graphs.
+We implement the BDD abstraction on top of the CU decision diagrams package~\cite{cudd}, which is high performance and offers the ability to extract prime implicants (as in~\cite{prime:mit:92}).  The prime implicants of the negation of the Boolean function are easily converted to conjuncts of the form used by QUIC graphs.
 
 \subsection{The Equalities Domain Functor: Compact Equality Constraints}
 \label{s:4:4:eqs}
