@@ -106,7 +106,7 @@ but additional patterns increase the cost of joins.
 \subsection{BDD-based Set Constraints}
 \label{s:4:3:bdd}
 % - BDD structure quickly explained
-Binary decision diagrams (BDDs)~\cite{bdd:trans:86} are a canonical representation of Boolean algebraic functions.  There are three basic syntactic elements of a BDD.  The $\textsc{True}$ and $\textsc{False}$ elements represent the obvious constants, but $\textrm{ITE}(X,B_t,B_e)$ is an if-then-else structure.  If the variable $X$ is $\true$, the result of evaluating $B_t$ is returned, otherwise the result of evaluating $B_e$ is returned.
+Binary decision diagrams (BDDs)~\cite{bdd:csd:99} are a canonical representation of Boolean algebraic functions.  There are three basic syntactic elements of a BDD.  The $\textsc{True}$ and $\textsc{False}$ elements represent the obvious constants, but $\textrm{ITE}(X,B_t,B_e)$ is an if-then-else structure.  If the variable $X$ is $\true$, the result of evaluating $B_t$ is returned, otherwise the result of evaluating $B_e$ is returned.
 \begin{align*}
   B ::= \textsc{True} \ | \ \textsc{False} \ | \ \textrm{ITE}(X,B_t,B_e)
 \end{align*}
