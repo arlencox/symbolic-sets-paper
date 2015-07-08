@@ -1,10 +1,10 @@
 \section{Overview}
 \label{s:2:over}
 In this section, we present two static analyses that make use of set
-reasoning in order to compute high level semantic properties of
+reasoning in order to compute high-level semantic properties of
 programs.
 These analyses rely on abstract interpretation~\cite{cc:popl:77} and
-on an abstraction of program states, that describes data structures
+on an abstraction of program states that describes data structures
 and their contents.
 An abstract domain defines a set of predicates that an analysis may
 use, as well as operators to over-approximate the effect of program
@@ -20,39 +20,39 @@ in Figure~\ref{f:1:intro}, by
 inferring relations between the sets of attributes
 of distinct objects.
 Since objects may have an unbounded number of attributes, the analysis must 
-abstract the attributes and their contents.
-\newcommand{\varsrc}{\cvar{src}}
-\newcommand{\vardst}{\cvar{dst}}
+abstract the attributes and their contents. %
+\newcommand{\varsrc}{\cvar{src}}%
+\newcommand{\vardst}{\cvar{dst}}%
 \begin{figure}[t]
   \newcommand{\picscale}{0.82}
   \centering
     \tikzpics{\picscale}{hoo-inv}
   \caption{Open objects and their abstraction}
   \label{f:2:hoo}
-\end{figure}
+\end{figure}%
 Figure~\ref{f:2:hoo} represents a simplified state at the indicated
-point in Figure~\ref{f:1:intro},
+point in Figure~\ref{f:1:intro}
 after two iterations (thus two fields were copied).
-We focus on the set of attributes of each object, and ignore their
+We focus on the set of attributes of each object and ignore their
 contents (which could be described using similar techniques).
 To precisely abstract the relations between the attributes of both objects
 (\eg copied attributes are common to both objects), we partition the
-attributes into a series of attribute sets,
+attributes into a series of attribute sets
 and express relations among these sets.
 The purpose of the set abstract domain is to represent such set
 relations.
-The right hand side of Figure~\ref{f:2:hoo} depicts such an abstract
+Figure~\ref{f:2:hoo}b depicts such an abstract
 state, where \( X_n, X_r, X_v \) stand for sets of attributes, which are
-made explicit, in the case of the left hand side concrete state.
+made explicit in Figure~\ref{f:2:hoo}a, the concrete state.
 
 Moreover, to infer these invariants, the analysis needs to reason
-about both object structures and attributes sets.
-Initially, it assumes no set relation, and the fields of
+about both object structures and attribute sets.
+Initially it assumes no set relations, and the fields of
 each object should be associated to an arbitrary set of attributes.
 When the analysis enters the body of the loop, it needs to
-{\em single out} attribute \( \mathtt{x} \), thus, to replace set
-\( X_v \) by \( X_v \suplus \{ \mathtt{x} \} \) (which produces the
-equalities of Figure~\ref{f:2:hoo}).
+{\em single out} attribute \( \mathtt{x} \), \ie to replace set
+\( X_v \) by \( X_v \suplus \{ \mathtt{x} \} \),which produces the
+equalities of Figure~\ref{f:2:hoo}.
 When it exits the loop, the analysis should {\em generalize}
 both the object and set constraints abstractions, which requires
 {\em eliminating} the singleton \( \{ \mathtt{x} \} \) from the
@@ -60,7 +60,7 @@ equations (it is visible only in the loop body) and synthesizing
 a new, more general collection of constraints.
 To allow these steps, the set abstraction should provide basic operations
 over set predicates, including (1) the addition of a set constraint, (2)
-the proving of a set constraint, (3) the removal of a set variable and
+the proving of a set constraint, (3) the removal of a set variable, and
 (4) the generalization of two set abstract states.
 
 \paragraph{Shape analysis in presence of unstructured sharing.}
@@ -70,12 +70,12 @@ describe memory states and on inductive definitions to summarize
 unbounded structures such as lists.
 Unstructured sharing is very challenging as it cannot be described using
 conventional inductive definitions.
-Figure~\ref{f:3:memcad}(a) displays the representation of a three nodes
+Figure~\ref{f:3:memcad}a displays the representation of a three nodes
 graph using an adjacency list data-structure.
 To summarize such a structure using inductive predicates in separation
 logic, \cite{memcad:15:sas} augments the list inductive
 predicates with set information, which express where edges may point to.
-Figure~\ref{f:3:memcad}(b) shows this representation in
+Figure~\ref{f:3:memcad}b shows this representation in
 a form where the first node is kept materialized.
 It asserts that the edges of that node and other nodes
 point to the address of a valid node, namely an element of \( \{ \naddr{0}
@@ -101,4 +101,4 @@ and a {\em set abstraction}.
 To compute such summaries, the analysis needs to perform similar
 operations as the analysis for open objects, in order to add set
 constraints to the set abstract state, prove set constraints,
-remove set variables and generalize abstract states.
+remove set variables, and generalize abstract states.

@@ -1,11 +1,10 @@
 \section{Logic and Set Abstraction}
 \label{sec:logic-and-set-abstraction} \label{s:3:abs}
-We now define the elements and operators of a set abstract domain that
-implements all the analyses shown in Section~\ref{s:2:over} require.
+We now define the elements and operators of a set abstract domain that meets the needs of all the analyses shown in Section~\ref{s:2:over}.
 
 \paragraph{Concrete states.}
-In this paper, we use symbols $\setvw$, $\setvx$, $\setvy$, and $\setvz$
-and let $\setvars$ represent the set of set variables.
+In this paper, we use symbols $\setvw$, $\setvx$, $\setvy$, and $\setvz$ as set variables
+and let $\setvars$ represent the set of all such variables.
 We are interested in purely symbolic set relations, and do not make any
 assumption on the type of the set elements (in practice these are pointers
 or scalars).
@@ -85,7 +84,7 @@ and we use $\aform{L}$ for abstract states with the same concretization.
   \caption{Symbolic set constraint language}
   \label{f:4:symsets}
 \end{figure}
-We shall also use the following derived logical forms for simplicity.
+We shall also use the following derived logical forms for simplicity:
 \[
 E_1 \cap E_2 \defeq \comp{(\comp{E_1} \cup \comp{E_2})}
 \qquad
@@ -105,12 +104,9 @@ Abstract elements are characterized by
 (2) their machine representation.
 The latter is usually very different from the formulas, and will be
 discussed in Section~\ref{s:4:domains}.
-For short, given a machine representation of abstract elements,
-we shall note \( \aform{L} \) for an abstract element describing
-\( \gamma( L ) \).
 \begin{example}[(Non-)Emptiness set domain]
   \label{ex:1:mt}
-  A very basic example of such domain is the {\em (non-)emptiness} domain
+  A very basic example of such a domain is the {\em (non-)emptiness} domain
   that comprises the following elements:
   \begin{compactitem}
   \item \( \bot \), which denotes the unsatisfiable abstract constraint
@@ -133,7 +129,7 @@ analyses shown in Section~\ref{s:2:over}.
   Static analyses typically start with an unconstrained state.
   This is indicated by a \( \adomtop \in \adom \) element with full
   concretization, \ie, \( \gammadom( \adomtop ) = \states \).
-  Similarly abstract element \( \adombot \in \adom \) should describe
+  Similarly, the abstract element \( \adombot \in \adom \) should describe
   the unsatisfiable abstract constraint (\ie, \( \gammadom( \adombot ) =
   \emptyset \)).
   In Example~\ref{ex:1:mt}, \( \adombot \) is \( \bot \) and \( \adomtop \)
@@ -148,7 +144,7 @@ analyses shown in Section~\ref{s:2:over}.
   Static analysis tools drop set variables that become redundant.
   In the open object example of Section~\ref{s:2:over}, this occurs when
   the singleton symbol is eliminated at the end of the loop.
-  To do this, we require set abstract domain \( \adom \) to provide
+  To do this, we require the set abstract domain \( \adom \) to provide
   an operator \( \adomforget: \adom \times \setvars \rightarrow \adom \)
   that discards a symbol from the abstract state.
   % forget soundness property
@@ -158,7 +154,7 @@ analyses shown in Section~\ref{s:2:over}.
   {\em restricts an abstract state with set constraints}, thus set
   domain \( \adom \) should provide an operator \( \adomassume: \adom
   \times \symsets \rightarrow \adom \), which conservatively represents
-  a constraint into an abstract state, \ie, ensures that, for all
+  a constraint into an abstract state, \ie ensures that, for all
   \( \astate, L \), \( \gammadom( \astate ) \cap \gamma( L ) \subseteq
   \gammadom( \adomassume( \astate, L ) ) \).
   Note that this operator also makes use of the symbolic set language
@@ -166,11 +162,11 @@ analyses shown in Section~\ref{s:2:over}.
   communicated to the domain.
   
 \item \emph{Verifying set constraints.}
-  Similarly, set reasoning should {\em in fine} allow to {\em verify
-    set constraints}, thus set domain \( \adom \) should provide an operator
+  Similarly, set reasoning should allow {\em verifying
+    set constraints}, thus the set domain \( \adom \) should provide an operator
   \( \adomprove: \adom \times \symsets \rightarrow \{ \true, \false \} \),
   which conservatively attempts to verify that a symbolic set constraint
-  holds under some abstract states, \ie, ensures that, for all \( \astate,
+  holds under some abstract states, \ie ensures that, for all \( \astate,
   L \), \( \gammadom( \adomassume( \astate, L ) ) = \true \) implies that
   \( \gammadom( \astate ) \subseteq \gamma( L ) \).
 
@@ -188,11 +184,11 @@ analyses shown in Section~\ref{s:2:over}.
   and ensure termination of any sequence of abstract iterates.
 
 \item \emph{Deciding entailment over set abstractions.}
-  Last, operator \( \adomisle: \adom \times \adom \rightarrow \{ \true,
+  Finally, the operator \( \adomisle: \adom \times \adom \rightarrow \{ \true,
   \false \} \) conservatively decides implication among abstract set
   constraints (by ensuring that \( \adomisle( \astate_0, \astate_1 ) =
   \true \Longrightarrow \gammadom( \astate_0 ) \subseteq \gammadom(
-  \astate_1 ) \)), and allows to verify the convergence of abstract
+  \astate_1 ) \)), and allows verifying the convergence of abstract
   iterates.
 \end{asparaitem}
 %ac: Should we include the rename operator here?  It seems critical to a lot of what we do, and while we consider it fairly trivial for domains, it is a non-trivial, expensive operation for SMT and solver domains.

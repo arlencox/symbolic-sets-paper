@@ -1,7 +1,7 @@
 \section{Constructed Set Abstractions}
 \label{sec:constructed} \label{s:4:domains}
-An abstract domain is defined by a class of set constraints and their machine
-representation, and abstract operations following the signature given in
+An abstract domain is defined by a class of set constraints, their machine
+representation, and the abstract operations following the signatures given in
 Section~\ref{s:3:abs}.
 In this section, we introduce three basic set abstract domains (respectively
 based on linear constraints, QUIC graphs, and BDDs) and two set abstract
@@ -26,7 +26,7 @@ of constraints:
     \setvy_0 \suplus \ldots \suplus \setvy_k \suplus \setvz_0 \suplus \ldots
     \suplus \setvz_l} \), where \( \setvy_0, \ldots, \setvy_k \) are
   singletons (in our implementation, each variable may appear at most
-  {\em once} as the left hand side of such a constraint, to enable
+  {\em once} as the left-hand side of such a constraint, to enable
   normalization);
 \item inclusion constraints of the form \( \aform{\setvy \subseteq \setvx} \);
 \item equality constraints of the form \( \aform{\setvy = \setvx} \).
@@ -39,14 +39,14 @@ language of Definition~\ref{d:1:symsets} (thus, we do not formalize it
 in full details).
 The machine representation utilizes persistent dictionaries, that stand
 for functions over a finite domain.
-This reduces basic queries for facts (such as: ``does abstract state
+This reduces basic queries for facts (such as, ``does abstract state
 \( \astate \) entail that \( \setvx \subseteq \setvy \suplus \setvz
 \)~?'') to dictionary searches.
 
 \paragraph{Abstract operators.}
-The core algorithm of \( \adomlin \) normalizes an abstract values by
-expanding nested linear constraints:
-for instance, \( \aform{\setvx_0 = \setvx_1 \suplus \setvx_2 \wedge
+The core algorithm of \( \adomlin \) normalizes abstract values by
+expanding nested linear constraints.
+For instance, \( \aform{\setvx_0 = \setvx_1 \suplus \setvx_2 \wedge
   \setvx_1 = \setvx_3 \suplus \setvx_4} \) is rewritten into
 \( \aform{\setvx_0 = \setvx_2 \suplus \setvx_3 \suplus \setvx_4 \wedge
   \setvx_1 = \setvx_3 \suplus \setvx_4} \) at the machine representation
@@ -60,7 +60,7 @@ made very fast by this normalization.
 Operation \( \adomforget \) simply drops all constraints that involve
 a given set variable.
 Finally, \( \adomjoin \) and \( \adomwiden \) need to {\em generalize}
-constraints:
+constraints.
 \begin{example}
   Let us assume that \( \astate_0 \) (\resp, \( \astate_1 \)) stands for
   the set of constraints \( \aform{\setvx_0 = \setvx_1 \suplus \setvx_2
@@ -73,16 +73,16 @@ constraints:
 \memcad~\cite{memcad:15:sas} relies on \( \adomlin \) to represent set
 constraints since it mainly needs to express constraints over set
 partitions.
-In the other hand, \( \adomlin \) is not adapted to the precise
+On the other hand, \( \adomlin \) is not adapted to the precise
 description of non disjoint unions.
 
 \subsection{QUIC graphs}
 \label{s:4:2:quic}
 
-A QUIC graph~\cite{ab:ecoop:13} is a directed hypergraph data structure used to represent relational set constraints.  Each edge in the hypergraph corresponds to a subset constrtaint and each hypergraph is a conjunction of subset constraints where each constraint is of the form: $\aform{X_1 \cap \ldots \cap X_n \subseteq Y_1 \cup \ldots \cup Y_m}$.  Each variable can also be constrained to be a singleton with constraints such as $\aform{|X| = 1}$.  The concretization $\gamma_q : \adom_q \rightarrow \partsof{\states}$ is of the same form as that of the symbolic sets language of Definition~\ref{d:1:symsets}.
+A QUIC graph~\cite{ab:ecoop:13} is a directed hypergraph data structure used to represent relational set constraints.  Each edge in the hypergraph corresponds to a subset constrtaint and each hypergraph is a conjunction of subset constraints where each constraint is of the form $\aform{X_1 \cap \ldots \cap X_n \subseteq Y_1 \cup \ldots \cup Y_m}$.  Each variable can also be constrained to be a singleton, with constraints such as $\aform{|X| = 1}$.  The concretization $\gamma_q : \adom_q \rightarrow \partsof{\states}$ is of the same form as that of the symbolic sets language of Definition~\ref{d:1:symsets}.
 
 % - algorithms main ideas
-QUIC graphs is designed for efficiently performing two operations:
+QUIC graphs are designed for efficiently performing two operations:
 (1) $\adomforget$, which matches edges containing the symbol to be
 forgotten with each other to produce new edges without that symbol; and
 (2) content reasoning, which is not a design goal for symbolic sets.
@@ -100,7 +100,7 @@ but additional patterns increase the cost of joins.
       \astate_1 &= \aform{X_1 \subseteq X_4 \logand X_4 \subseteq X_2} &
       \adomjoin(\astate_0, \astate_1 )
     \end{align*}
-    There is an obvious result: $\aform{X_1 \subseteq X_2}$.  Whether or not QUIC graphs derives this result or top is determined by the pattern matches that are installed.  If the pattern takes $\aform{X_a \subseteq X_b \logand X_b \subseteq X_c}$ and generates $\aform{X_a \subseteq X_c}$ is installed, it will first apply the pattern to both sides and then keep common conjuncts, getting the desired result.  Without that pattern, or a similar substitute, QUIC graphs derives $\aform{\top}$.
+    There is an obvious result: $\aform{X_1 \subseteq X_2}$.  Whether or not QUIC graphs derive this result or $\aform{\top}$ is determined by the pattern matches that are installed.  If the pattern that takes $\aform{X_a \subseteq X_b \logand X_b \subseteq X_c}$ and generates $\aform{X_a \subseteq X_c}$ is used, the pattern will be applied to both sides and then common conjuncts kept, getting the desired result.  Without that pattern or a similar substitute, QUIC graphs derive $\aform{\top}$.
 \end{example}
 
 \subsection{BDD-based Set Constraints}
@@ -146,12 +146,12 @@ We implement the BDD abstraction on top of the CU decision diagrams package~\cit
 % - origin of the equalities problem (cases where there are too many variables
 %   and most of them are equal, consequences in terms of complexity)
 
-When analyzing real programs, in addition to complex set constraints, there are often many very simple equality constraints of the form $\aform{X = Y}$.  These can be a problem in several ways.  In BDDs, for example, while equalities are normalized and handled precisely, they can grow the size of the BDDs significantly.  This results in significantly increased memory usage and decreased efficiency since many BDD operation rebuild the BDD.  In QUIC graphs, equalities grow the size of the graph, and place significantly more load on the pattern matching system, potentially causing a blow up in the number of constraints because QUIC graphs can represent each variant of an expression rewritten using all available equalities.  In linear set abstractions, there are similar potential problems.
+When analyzing real programs, in addition to complex set constraints, there are often many very simple equality constraints of the form $\aform{X = Y}$.  These can be a problem in several ways.  For example, equalities are normalized and handled precisely in BDDs, but they can grow the size of the representation significantly.  This results in significantly increased memory usage and decreased efficiency since many BDD operations rebuild the BDD.  In QUIC graphs, equalities grow the size of the graph, and place significantly more load on the pattern matching system, potentially causing an explosion in the number of constraints.  This is because QUIC graphs can represent each variant of an expression rewritten using all available equalities.  In linear set abstractions, there are similar potential problems.
 
 As a result, abstractions like QUIC graphs and the linear set abstraction have special handling for equality.  This improves performance and precision at the cost of complexity.  Instead, much of this complexity can be moved outside the abstraction and handled by lifting the abstraction to one that keeps track of equalities separately from other kinds of constraints.
 
 % - principle of the functor
-The equality functor serves as an intermediary between the domain interface and the abstract domain that is being lifted.  It intercepts equality constraints and handles them externally preventing them from being seen by the underlying abstract domain.  This saves the domain from the cost and complexity of handling the equalities.
+The equality functor serves as an intermediary between the domain interface and the abstract domain that is being lifted.  It intercepts equality constraints and handles them externally, preventing them from being seen by the underlying abstract domain.  This saves the domain from the cost and complexity of handling the equalities.
 
 % - abstract states and concretization
 The equality functor defines a set of equivalence classes $\eqrep$.  The set of equivalence classes is a map $\setvars \rightarrow \setvars$ that maps each variable to the chosen representative for the equivalence class.  The functor then lifts an abstract state $\adom$ into a tuple $(\adom, \eqrep)$.  In the lifting, $\adom$ is restricted to only have symbols that are representatives for the equivalence class.  Therefore, when an equality is added that merges two equivalence classes, the resulting representative replaces the two previous representatives in $\adom$.
@@ -161,7 +161,7 @@ The concretization ensures that all symbols in the same equivalence class map to
 \gamma((\eqrep,\adom)) = \{ \ \state \ | \ \state \in \gamma(\adom) \wedge \forall X,Y \in \setvars^2. \; \eqrep(X) = \eqrep(Y) \rightarrow \state(X) = \state(Y) \ \}
 \end{align*}
 
-Domain operations $\adomjoin$, $\adomwiden$, and $\adomisle$, unify their corresponding $\eqrep$s pushing any non-common equalities into the underlying domain.  This ensure that the underlying domain determines the precision, but it is not required to handle most of the load of the equalities.  The $\adomassume$ operation rewrites the constraint, extracting the equalities and rewriting remaining variables to their representatives before passing the constraint to the underlying domain.
+Domain operations $\adomjoin$, $\adomwiden$, and $\adomisle$ unify their corresponding $\eqrep$s, pushing any non-common equalities into the underlying domain.  This ensures that the underlying domain determines the precision, but it is not required to handle most of the load of the equalities.  The $\adomassume$ operation rewrites the constraint, extracting the equalities and rewriting remaining variables to their representatives before passing the constraint to the underlying domain.
  
 
 % - example
@@ -180,20 +180,20 @@ In the join, the equivalence classes are unified, producing the resulting $\eqre
 \subsection{The Packing Domain Functor: Sparse Constraints}
 \label{s:4:5:packs}
 % - issue with relational abstract domains
-Most relational domains have a complexity that is related to the number of variables constrained by the abstract state.  For example, BDDs, in the worst case, are exponential in the number of variables.  However, in many programs, there are relatively small clusters of variables that are related.  Therefore it is possible to increase the efficiency of analysis by representing each cluster of variables by a separate abstract state~\cite{ens:pldi:03}.
+Most relational domains have a complexity that is related to the number of variables constrained by the abstract state.  For example, BDDs, in the worst case, are exponential in the number of variables.  However, in many programs, there are relatively small clusters of variables that are related.  Therefore it is possible to increase the efficiency of an analysis by representing each cluster of variables by a separate abstract state~\cite{ens:pldi:03}.
 
 % - packing principle (citations to Astree)
-If each of $m$ clusters of $n$ variables is represented by a separate abstract state, rather than operations having a complexity of, for example, $O(2^{m\cdot n})$, they can have complexity $O(m\cdot 2^n)$.  To do this, initially all variables are assumed to be in their own cluster.  Clusters are merged whenever variables from each cluster occur in the same constraint.  In this way the clusters are dynamically determined, which is required when an abstract domain is used as a library and thus a pre-analysis cannot be performed.
+If each of $m$ clusters of $n$ variables is represented by a separate abstract state, rather than operations having a complexity of, for example, $O(2^{m\cdot n})$, they can have complexity $O(m\cdot 2^n)$.  To do this, all variables are initially assumed to be in their own cluster.  Clusters are merged whenever variables from each cluster occur in the same constraint.  In this way the clusters are dynamically determined, which is required when an abstract domain is used as a library and thus a pre-analysis cannot be performed.
 
 % - abstract states and concretization
-An abstract state in the cluster functor consists of one of three values: $\top$, $\bot$, or a map $M : \#_M \rightarrow \adom$ that maps cluster ids in $\#_M$ to abstract states from the domain being lifted.  The $\top$ and $\bot$ values concretize as they do in Figure~\ref{f:4:symsets}.  The map concretizes as follows:
+An abstract state in the packing functor consists of one of three values: $\top$, $\bot$, or a map $M : \#_M \rightarrow \adom$ that maps cluster ids in $\#_M$ to abstract states from the domain being lifted.  The $\top$ and $\bot$ values concretize as they do in Figure~\ref{f:4:symsets}.  The map concretizes as follows:
 \begin{align*}
   \gamma(M) = \{ \state \ | \ \forall \astate \in \textrm{Range}(M). \; \state \in \gamma(\astate) \}
 \end{align*}
 
 % - example
 \begin{example}[Constraining a packed abstract state]
-Consider the following abstract state represented by the logic from Definition~\ref{d:1:symsets}, lifted into two packs with ids $0$, and $1$:
+Consider the following abstract state represented by the logic from Definition~\ref{d:1:symsets}, lifted into two packs with ids $0$ and $1$:
 $
   \astate_0 = [0 \mapsto \aform{X_0 \subseteq X_1}; \; 1 \mapsto \aform{Y_0 \subseteq Y_1} ]
 $.

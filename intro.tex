@@ -5,7 +5,7 @@ involve data structures is a challenging problem~\cite{jahob:thesis:07,compass:p
 One key reason for this is that
 if a data structure is unbounded, there is a potentially unbounded number of constraints on its elements.  Since these constraints often affect important properties such as memory safety~\cite{memcad:15:sas}, functional correctness~\cite{fixbag:cav:11}, or basic program behavior~\cite{hoo:14:sas}, it is vital to develop techniques for efficiently reasoning about relationships between unbounded numbers of elements.
 
-This paper focuses on the use of set constraints to reason about unbounded collections of elements.  Set constraints can be used to dynamically partition data structures, correlate collections of elements with one another, or determine analysis case splits.  They are useful for representing data and pointers relationships in structures such as maps, graphs, lists, sets, and arrays.  They can be combined with other techniques such as separation logic~\cite{hoo:14:sas,memcad:15:sas} and numerical analyses~\cite{quicr:cav:14} to enhance those analyses.
+This paper focuses on the use of set constraints to reason about unbounded collections of elements.  Set constraints can be used to dynamically partition data structures, correlate collections of elements with one another, or determine analysis case splits.  They are useful for representing data and pointer relationships in structures such as maps, graphs, lists, sets, and arrays.  They can be combined with other techniques such as separation logic~\cite{hoo:14:sas,memcad:15:sas} and numerical analyses~\cite{quicr:cav:14} to enhance those analyses.
 
 %% xr: need to adjust overview, there is some repetition now
 For example, consider the program in Figure~\ref{fig:intro-example}
@@ -15,7 +15,7 @@ keys of \ttvar{src} and \ttvar{dst}.
 At the specified point, the keys of \ttvar{src} can be partitioned into
 three parts.
 The keys already visited $X_v$ by the loop, the element currently being
-visited by the loop $\{\varx\}$, and the keys not visited $X_n$ by
+visited $\{\varx\}$ by the loop , and the keys not visited $X_n$ by
 the loop.
 The keys of \ttvar{dst} can be partitioned into those originally in
 \ttvar{dst} that have not been overwritten, and those $X_v$ that have
@@ -111,7 +111,7 @@ In this paper we aim to design scalable, precise, and predictable abstractions f
 \begin{compactitem}
 \item We define a common interface for symbolic set abstractions that is designed to meet the needs of static analyzers (Section~\ref{sec:logic-and-set-abstraction}).
 %
-\item Using specialized data structures, we construct a battery of symbolic set abstract domains and performance/precision-enhancing functors designed to target real-world data structure verification problems (Section~\ref{sec:constructed}).
+\item Using specialized data structures, we construct a battery of symbolic set abstract domains and performance-/precision-enhancing functors designed to target real-world data structure verification problems (Section~\ref{sec:constructed}).
 %
 \item We adapt an off-the-shelf satisfiability-modulo-theories solver to the set abstraction interface (Section~\ref{sec:solvers}).
 %
