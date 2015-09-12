@@ -25,9 +25,9 @@ of constraints:
 \item acyclic {\em linear} constraints of the form \( \aform{\setvx =
     \setvy_0 \suplus \ldots \suplus \setvy_k \suplus \setvz_0 \suplus \ldots
     \suplus \setvz_l} \), where \( \setvy_0, \ldots, \setvy_k \) are
-  singletons (in our implementation, each variable may appear at most
+  singletons (containing $y_0, \ldots, y_k$ respectively). In the implementation, each variable may appear at most
   {\em once} as the left-hand side of such a constraint, to enable
-  normalization);
+  normalization;
 \item inclusion constraints of the form \( \aform{\setvy \subseteq \setvx} \);
 \item equality constraints of the form \( \aform{\setvy = \setvx} \).
 \end{compactitem}
@@ -79,7 +79,7 @@ description of non disjoint unions.
 \subsection{QUIC graphs}
 \label{s:4:2:quic}
 
-A QUIC graph~\cite{ab:ecoop:13} is a directed hypergraph data structure used to represent relational set constraints.  Each edge in the hypergraph corresponds to a subset constrtaint and each hypergraph is a conjunction of subset constraints where each constraint is of the form $\aform{X_1 \cap \ldots \cap X_n \subseteq Y_1 \cup \ldots \cup Y_m}$.  Each variable can also be constrained to be a singleton, with constraints such as $\aform{|X| = 1}$.  The concretization $\gamma_q : \adom_q \rightarrow \partsof{\states}$ is of the same form as that of the symbolic sets language of Definition~\ref{d:1:symsets}.
+A QUIC graph~\cite{ab:ecoop:13} is a directed hypergraph data structure used to represent relational set constraints.  Each edge in the hypergraph corresponds to a subset constraint and each hypergraph is a conjunction of subset constraints where each constraint is of the form $\aform{\setvx_1 \cap \ldots \cap \setvx_n \subseteq \setvy_1 \cup \ldots \cup \setvy_m}$.  Each variable can also be constrained to be a singleton, with constraints such as $\aform{|\setvx| = 1}$.  The concretization $\gamma_q : \adom_q \rightarrow \partsof{\states}$ is of the same form as that of the symbolic sets language of Definition~\ref{d:1:symsets}.
 
 % - algorithms main ideas
 QUIC graphs are designed for efficiently performing two operations:
@@ -96,24 +96,24 @@ but additional patterns increase the cost of joins.
 % - example
 \begin{example}[QUIC graph join] \label{ex:Qjoin}  Consider the following join operation:
     \begin{align*}
-      \astate_0 &= \aform{X_1 \subseteq X_3 \logand X_3 \subseteq X_2} &
-      \astate_1 &= \aform{X_1 \subseteq X_4 \logand X_4 \subseteq X_2} &
+      \astate_0 &= \aform{\setvw \subseteq \setvx \logand \setvx \subseteq \setvz} &
+      \astate_1 &= \aform{\setvw \subseteq \setvy \logand \setvy \subseteq \setvz} &
       \adomjoin(\astate_0, \astate_1 )
     \end{align*}
-    There is an obvious result: $\aform{X_1 \subseteq X_2}$.  Whether or not QUIC graphs derive this result or $\aform{\top}$ is determined by the pattern matches that are installed.  If the pattern that takes $\aform{X_a \subseteq X_b \logand X_b \subseteq X_c}$ and generates $\aform{X_a \subseteq X_c}$ is used, the pattern will be applied to both sides and then common conjuncts kept, getting the desired result.  Without that pattern or a similar substitute, QUIC graphs derive $\aform{\top}$.
+    There is an obvious result: $\aform{\setvw \subseteq \setvz}$.  Whether or not QUIC graphs derive this result or $\aform{\top}$ is determined by the pattern matches that are installed.  If the pattern that takes $\aform{\setvx \subseteq \setvy \logand \setvy \subseteq \setvz}$ and generates $\aform{\setvx \subseteq \setvz}$ is used, the pattern will be applied to both sides and then common conjuncts kept, getting the desired result.  Without that pattern or a similar substitute, QUIC graphs derive $\aform{\top}$.
 \end{example}
 
 \subsection{BDD-based Set Constraints}
 \label{s:4:3:bdd}
 % - BDD structure quickly explained
-Binary decision diagrams (BDDs)~\cite{bdd:csd:99} are a canonical representation of Boolean algebraic functions.  There are three basic syntactic elements of a BDD.  The $\textsc{True}$ and $\textsc{False}$ elements represent the obvious constants, but $\textrm{ITE}(X,B_t,B_e)$ is an if-then-else structure.  If the variable $X$ is $\true$, the result of evaluating $B_t$ is returned, otherwise the result of evaluating $B_e$ is returned.
+Binary decision diagrams (BDDs)~\cite{bdd:csd:99} are a canonical representation of Boolean algebraic functions.  There are three basic syntactic elements of a BDD.  The $\textsc{True}$ and $\textsc{False}$ elements represent the obvious constants, but $\textrm{ITE}(\setvx,B_t,B_e)$ is an if-then-else structure.  If the variable $\setvx$ is $\true$, the result of evaluating $B_t$ is returned, otherwise the result of evaluating $B_e$ is returned.
 \begin{align*}
-  B ::= \textsc{True} \ | \ \textsc{False} \ | \ \textrm{ITE}(X,B_t,B_e)
+  B ::= \textsc{True} \ | \ \textsc{False} \ | \ \textrm{ITE}(\setvx,B_t,B_e)
 \end{align*}
-What makes BDDs canonical is that we only consider reduced, ordered BDDs, where it is assumed that there is a total order $\prec$ on the variables.  An $\textrm{ITE}(X,B_t,B_e)$ can only be constructed if $X \prec X'$ for all variables $X'$ in $B_t$ or $B_e$.  Additionally, structural sharing is mandated, so the reuse of the same syntax is referentially identical to any other use of that syntax.
+What makes BDDs canonical is that we only consider reduced, ordered BDDs, where it is assumed that there is a total order $\prec$ on the variables.  An $\textrm{ITE}(\setvx,B_t,B_e)$ can only be constructed if $\setvx \prec \setvx'$ for all variables $\setvx'$ in $B_t$ or $B_e$.  Additionally, structural sharing is mandated, so the reuse of the same syntax is referentially identical to any other use of that syntax.
 
 % - encoding of a class of set constraints (it gives the gamma)
-The encoding of constraints maps operators from their constraint form (as in Definition~\ref{d:1:symsets}) to their Boolean algebraic form: $\cup \mapsto \vee, \ \cap \mapsto \wedge, \ \comp{} \mapsto \neg, \ \subseteq \mapsto \rightarrow, \ = \mapsto \leftrightarrow$. After singleton set constraints are dropped, the remaining constraints are directly and exactly represented by the BDD.  
+The encoding of constraints maps operators from their constraint form (as in Definition~\ref{d:1:symsets}) to their Boolean algebraic form: $\cup \mapsto \vee, \ \cap \mapsto \wedge, \ \comp{} \mapsto \neg, \ \subseteq \mapsto \rightarrow, \ = \mapsto \leftrightarrow$. All but singleton set constraints are directly and exactly represented by the BDD.  Singleton constraints are not currently used by the BDD-based abstraction.
 
 % - algorithms main ideas
 Domain operations are straightforward: $\adomjoin$ and $\adomwiden$ are implemented with the $\vee$ operation, which is precise and does not need any rules or heuristics; $\adomforget$ takes advantage of reasonably efficient quantifier elimination provided by BDDs and uses existential quantifier elimination to drop variables.  Queries such as $\adomisle$ are easily implemented using validity checking functionality provided by BDDs.  Critically, because BDDs are a canonical form, many operations such as $\adomforget$ and $\adomassume$ become much more efficient, whereas the operation $\adomisbot$ becomes an $O(1)$ check.
@@ -121,21 +121,21 @@ Domain operations are straightforward: $\adomjoin$ and $\adomwiden$ are implemen
 % - example
 \begin{example}[BDD-based join]  Consider the same inputs as Example~\ref{ex:Qjoin}.  Encoding them to BDDs (and using some Boolean-algebraic notation as shorthand) yields the following results:
 \begin{align*}
-  & \astate_0 = \aform{X_1 \subseteq X_3 \logand X_3 \subseteq X_2} =
-  \textrm{ITE}(X_1, X_2 \wedge X_3, \textrm{ITE}(X_2, \textsc{True},
-  \neg X_3))
+  & \astate_0 = \aform{\setvw \subseteq \setvy \logand \setvy \subseteq \setvx} =
+  \textrm{ITE}(\setvw, \setvx \wedge \setvy, \textrm{ITE}(\setvx, \textsc{True},
+  \neg \setvy))
   \\
-  & \astate_1 = \aform{X_1 \subseteq X_4 \logand X_4 \subseteq X_2} =
-  \textrm{ITE}(X_1, X_2 \wedge X_4, \textrm{ITE}(X_2, \textsc{True},
-  \neg X_4))
+  & \astate_1 = \aform{\setvw \subseteq \setvz \logand \setvz \subseteq \setvx} =
+  \textrm{ITE}(\setvw, \setvx \wedge \setvz, \textrm{ITE}(\setvx, \textsc{True},
+  \neg \setvz))
   \\
   & \adomjoin(\astate_0, \astate_1 ) =
-  \textrm{ITE}(X_1, X_2 \wedge \textrm{ITE}(X_3, \textsc{True}, X_4),
+  \textrm{ITE}(\setvw, \setvx \wedge \textrm{ITE}(\setvy, \textsc{True}, \setvz),
   \\
   & \qquad \qquad \qquad \qquad \qquad \quad \;\;
-  \textrm{ITE}(X_2, \textsc{True}, \textrm{ITE}(X_3, \neg X_4, \textsc{True})))
+  \textrm{ITE}(\setvx, \textsc{True}, \textrm{ITE}(\setvy, \neg \setvz, \textsc{True})))
 \end{align*}
-  The result of this join is equivalent to the set constraints $\aform{X_1 \subseteq X_2}$, $\aform{X_1 \subseteq X_3 \cup X_4}$, and $\aform{X_3 \cap X_4 \subseteq X_2}$, which includes not only the obvious result of $\aform{X_1 \subseteq X_2}$, but also other, possibly useful results.  It is a precise join.
+  The result of this join is equivalent to the set constraints $\aform{\setvw \subseteq \setvx}$, $\aform{\setvw \subseteq \setvy \cup \setvz}$, and $\aform{\setvy \cap \setvz \subseteq \setvx}$, which includes not only the obvious result of $\aform{\setvw \subseteq \setvx}$, but also other, possibly useful results.  It is a precise join.
 \end{example}
 
 We implement the BDD abstraction on top of the CU decision diagrams package~\cite{cudd}, which is high performance and offers the ability to extract prime implicants (as in~\cite{prime:mit:92}).  The prime implicants of the negation of the Boolean function are easily converted to conjuncts of the form used by QUIC graphs.
@@ -146,7 +146,7 @@ We implement the BDD abstraction on top of the CU decision diagrams package~\cit
 % - origin of the equalities problem (cases where there are too many variables
 %   and most of them are equal, consequences in terms of complexity)
 
-When analyzing real programs, in addition to complex set constraints, there are often many very simple equality constraints of the form $\aform{X = Y}$.  These can be a problem in several ways.  For example, equalities are normalized and handled precisely in BDDs, but they can grow the size of the representation significantly.  This results in significantly increased memory usage and decreased efficiency since many BDD operations rebuild the BDD.  In QUIC graphs, equalities grow the size of the graph, and place significantly more load on the pattern matching system, potentially causing an explosion in the number of constraints.  This is because QUIC graphs can represent each variant of an expression rewritten using all available equalities.  In linear set abstractions, there are similar potential problems.
+When analyzing real programs, in addition to complex set constraints, there are often many very simple equality constraints of the form $\aform{\setvx = \setvy}$.  These can be a problem in several ways.  For example, equalities are normalized and handled precisely in BDDs, but they can grow the size of the representation significantly.  This results in significantly increased memory usage and decreased efficiency since many BDD operations rebuild the BDD.  In QUIC graphs, equalities grow the size of the graph, and place significantly more load on the pattern matching system, potentially causing an explosion in the number of constraints.  This is because QUIC graphs can represent each variant of an expression rewritten using all available equalities.  In linear set abstractions, there are similar potential problems.
 
 As a result, abstractions like QUIC graphs and the linear set abstraction have special handling for equality.  This improves performance and precision at the cost of complexity.  Instead, much of this complexity can be moved outside the abstraction and handled by lifting the abstraction to one that keeps track of equalities separately from other kinds of constraints.
 
@@ -158,7 +158,7 @@ The equality functor defines a set of equivalence classes $\eqrep$.  The set of 
 
 The concretization ensures that all symbols in the same equivalence class map to the same concrete set:
 \begin{align*}
-\gamma((\eqrep,\adom)) = \{ \ \state \ | \ \state \in \gamma(\adom) \wedge \forall X,Y \in \setvars^2. \; \eqrep(X) = \eqrep(Y) \rightarrow \state(X) = \state(Y) \ \}
+\gamma((\eqrep,\adom)) = \{ \ \state \ | \ \state \in \gamma(\adom) \wedge \forall \setvx,\setvy \in \setvars^2. \; \eqrep(\setvx) = \eqrep(\setvy) \rightarrow \state(\setvx) = \state(\setvy) \ \}
 \end{align*}
 
 Domain operations $\adomjoin$, $\adomwiden$, and $\adomisle$ unify their corresponding $\eqrep$s, pushing any non-common equalities into the underlying domain.  This ensures that the underlying domain determines the precision, but it is not required to handle most of the load of the equalities.  The $\adomassume$ operation rewrites the constraint, extracting the equalities and rewriting remaining variables to their representatives before passing the constraint to the underlying domain.
@@ -168,12 +168,12 @@ Domain operations $\adomjoin$, $\adomwiden$, and $\adomisle$ unify their corresp
 \begin{example}[Equality functor join]
 Consider the following two abstract states, where the underlying domain is just shown as symbolic set constraints:
 \begin{align*}
-  \astate_0 = ([W \mapsto W, X \mapsto W, Y \mapsto W], \aform{W \subseteq Z}) \ \ 
-  \astate_1 = ([X \mapsto X, Y \mapsto X], \aform{W \subseteq X \wedge X \subseteq Z})
+  \astate_0 = ([\setvw \mapsto \setvw, \setvx \mapsto \setvw, \setvy \mapsto \setvw], \aform{\setvw \subseteq \setvz}) \ \ 
+  \astate_1 = ([\setvx \mapsto \setvx, \setvy \mapsto \setvx], \aform{\setvw \subseteq \setvx \wedge \setvx \subseteq \setvz})
 \end{align*}
-In the join, the equivalence classes are unified, producing the resulting $\eqrep$: $[X \mapsto X, Y \mapsto X]$.  The equality $\aform{W = X}$ from $\astate_0$ is not represented in the unification, so it is added back to the underlying domain in $\astate_0$.  The result is therefore
+In the join, the equivalence classes are unified, producing the resulting $\eqrep$: $[\setvx \mapsto \setvx, \setvy \mapsto \setvx]$.  The equality $\aform{\setvw = \setvx}$ from $\astate_0$ is not represented in the unification, so it is added back to the underlying domain in $\astate_0$.  The result is therefore
 \begin{align*}
-  ([X \mapsto X, Y \mapsto X], \adomjoin(\aform{W = X \wedge W \subseteq Z}, \aform{W \subseteq X \wedge X \subseteq Z}))
+  ([\setvx \mapsto \setvx, \setvy \mapsto \setvx], \adomjoin(\aform{\setvw = \setvx \wedge \setvw \subseteq \setvz}, \aform{\setvw \subseteq \setvx \wedge \setvx \subseteq \setvz}))
 \end{align*}
 \end{example}
 
@@ -195,7 +195,7 @@ An abstract state in the packing functor consists of one of three values: $\top$
 \begin{example}[Constraining a packed abstract state]
 Consider the following abstract state represented by the logic from Definition~\ref{d:1:symsets}, lifted into two packs with ids $0$ and $1$:
 $
-  \astate_0 = [0 \mapsto \aform{X_0 \subseteq X_1}; \; 1 \mapsto \aform{Y_0 \subseteq Y_1} ]
+  \astate_0 = [0 \mapsto \aform{\setvx_0 \subseteq \setvx_1}; \; 1 \mapsto \aform{\setvy_0 \subseteq \setvy_1} ]
 $.
-The operation $\adomassume(\astate_0, Y_1 \subseteq Y_2)$ operates only on pack id $1$.  It does not have to involve any computation on pack $0$.  The resulting pack $1$ is: $1 \mapsto \adomassume(\aform{Y_0 \subseteq Y_1}, Y_1 \subseteq Y_2)$.
+The operation $\adomassume(\astate_0, \setvy_1 \subseteq \setvy_2)$ operates only on pack id $1$.  It does not have to involve any computation on pack $0$.  The resulting pack $1$ is: $1 \mapsto \adomassume(\aform{\setvy_0 \subseteq \setvy_1}, \setvy_1 \subseteq \setvy_2)$.
 \end{example}

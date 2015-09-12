@@ -31,7 +31,7 @@ and for the communication with the set abstract domain.
     & \ \emptyset \ | \ X \ | \ \comp{E} \ | \ E \cup E \ | \ E \suplus E
   \end{align*}
 \end{definition}
-The meaning of these contraints is straightforward, but we give a formal
+The meaning of these constraints is straightforward, but we give a formal
 definition in Figure~\ref{f:4:symsets} for clarity.
 A model of a set expression $E$ is a concrete state $\state$ and a set
 of concrete values $c$.
@@ -167,13 +167,13 @@ analyses shown in Section~\ref{s:2:over}.
   \( \adomprove: \adom \times \symsets \rightarrow \{ \true, \false \} \),
   which conservatively attempts to verify that a symbolic set constraint
   holds under some abstract states, \ie ensures that, for all \( \astate,
-  L \), \( \gammadom( \adomassume( \astate, L ) ) = \true \) implies that
+  L \), \( \adomprove( \astate, L ) = \true \) implies that
   \( \gammadom( \astate ) \subseteq \gamma( L ) \).
 
 \item \emph{Generalizing set abstractions.}
   The analysis of loops is commonly based on the computation of abstract
   post-fixpoints~\cite{cc:popl:77}, thus \( \adom \) should provide
-  sound over-approximation of concrete states join.
+  sound over-approximation of the union of sets concrete states.
   In the logical point of view, this amounts to computing a common weakening
   for two abstract constraints.
   This is performed by an operator \( \adomjoin: \adom \times \adom
